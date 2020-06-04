@@ -1,0 +1,16 @@
+{
+  "name": "cs348-waifu",
+  "version": "1.0.0",
+  "description": "waifus waifus waifus",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "nunjucks": "^3.2.1",
+    "promise-mysql": "^4.1.3"
+  }
+}
