@@ -2,7 +2,7 @@
 
 ### Requirements
 
-Your system must have `npm` and `nodejs` for this to work. Additionally, you need to be able to make a connection to a `mySQL` database.
+Your system must have `npm` and `nodejs` for this to work. Additionally, you need to be able to make a connection to a `MySQL` database.
 
 ### Setting up the project
 
