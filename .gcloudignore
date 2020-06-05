@@ -12,6 +12,7 @@
 # below:
 .git
 .gitignore
+config-local.json
 
 # Node.js dependencies:
 node_modules/
