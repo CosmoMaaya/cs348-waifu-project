@@ -43,6 +43,7 @@ app.post("/add", async (req, res) => {
 });
 
 let anime_list_request = async (req, res) => {
+	req.body["page"] = Math.max(parseInt(req.body["page"]), 0)
 	let acceptedSortFields = {
 		"title": "title_eng",
 		"rating": "score_mal"
@@ -57,13 +58,15 @@ let anime_list_request = async (req, res) => {
 			{fields}
 		FROM anime
 		ORDER BY {sort_field} {sort_order}
-		LIMIT 50
+		LIMIT {start_from}, 50
 	`;
 	query = utils.format_query(query, {
 		"fields": "title_eng, title_native, score_mal, type, img",
 		"sort_field": acceptedSortFields[req.body["sort_field"]],
-		"sort_order": acceptedSortOrder[req.body["sort_order"]]
+		"sort_order": acceptedSortOrder[req.body["sort_order"]],
+		"start_from": req.body["page"] * 50
 	});
+	
 	console.log(query)
 	const queryRes = await pool.query(query);
 	// console.log(queryRes)
@@ -78,8 +81,9 @@ let anime_list_request = async (req, res) => {
 app.post("/anime_list", anime_list_request);
 app.get("/anime_list", async (req, res) => {
 	// Default values
-	req.body["sort_field"] = "title";
-	req.body["sort_order"] = "ascending";
+	req.body["sort_field"] = "rating";
+	req.body["sort_order"] = "descending";
+	req.body["page"] = 0;
 	await anime_list_request(req, res);
 });
 
