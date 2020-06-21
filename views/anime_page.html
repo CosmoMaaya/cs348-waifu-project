@@ -1,0 +1,31 @@
+<html>
+<head>
+	<title>{{animeInfo.title_eng}}</title>
+	<link rel="stylesheet" href="/css/anime_page.css">
+</head>
+<body>
+    <div id="main_header_container">
+        <div id="image_container">
+            <img id="anime_img" src={{animeInfo.img}}></img>
+        </div>
+        <div id="main_info_container">
+            <p class="title_eng">{{animeInfo.title_eng}}</p>
+            <p class="dsc_sub dsc_title_native">{{animeInfo.title_native}}</p>
+            <p class="dsc_sub dsc_score">{{animeInfo.score_mal}} / 10</p>
+            <p class="dsc_sub dsc_anime_type">{{animeInfo.type}}</p>
+        </div>
+    </div>
+    
+    <div>
+        <p class="section_title">Main characters:</p>
+		{% for c in characterList %}
+            {% if c.role == "main" %}
+                <div>
+                    <img src={{c.img}}></img>
+                    <p>{{c.name_eng}}</p>
+                </div>
+            {% endif %}
+		{% endfor %}
+    </div>
+</body>
+</html>

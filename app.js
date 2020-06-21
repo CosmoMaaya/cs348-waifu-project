@@ -55,7 +55,7 @@ let anime_list_request = async (req, res) => {
 	
 	let query = `
 		SELECT
-			{fields}
+			id, {fields}
 		FROM anime
 		ORDER BY {sort_field} {sort_order}
 		LIMIT {start_from}, 50
@@ -66,11 +66,8 @@ let anime_list_request = async (req, res) => {
 		"sort_order": acceptedSortOrder[req.body["sort_order"]],
 		"start_from": req.body["page"] * 50
 	});
-	
-	console.log(query)
-	const queryRes = await pool.query(query);
-	// console.log(queryRes)
 
+	const queryRes = await pool.query(query);
 	try {
 		res.render("anime_list.html", {animeList: queryRes, defaults: req.body});
 	} catch(err) {
@@ -86,6 +83,46 @@ app.get("/anime_list", async (req, res) => {
 	req.body["page"] = 0;
 	await anime_list_request(req, res);
 });
+
+let anime_page_request = async (req, res) => {
+	let anime_id = parseInt(req.params.id)
+	let anime_info_query = `
+		SELECT
+			{fields}
+		FROM anime
+		WHERE id = {anime_id}
+	`;
+	anime_info_query = utils.format_query(anime_info_query, {
+		"fields": "title_eng, title_native, score_mal, type, img",
+		"anime_id": anime_id
+	});
+	
+	let character_list_query = `
+		SELECT
+			{fields}
+		FROM anime_to_waifu_mapping
+		INNER JOIN waifu
+		ON anime_to_waifu_mapping.waifu_id = waifu.id
+		WHERE anime_id = {anime_id}
+		ORDER BY {sort_order}
+	`
+	character_list_query = utils.format_query(character_list_query, {
+		"anime_id": anime_id,
+		"fields": "name_eng, role, likes_ap / (likes_ap + dislikes_ap) as score, img",
+		"sort_order": "likes_ap / (likes_ap + dislikes_ap)"
+	});
+
+	let info_query_res = await pool.query(anime_info_query);
+	let character_list_res = await pool.query(character_list_query);
+	try {
+		res.render("anime_page.html", {animeInfo: info_query_res[0], characterList: character_list_res});
+	} catch(err) {
+		console.log(err);
+		res.status(500).send("database failed").end();
+	}
+}
+
+app.get('/anime/:id', anime_page_request);
 
 (async () => {
 	try {

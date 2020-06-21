@@ -1,0 +1,30 @@
+#anime_img {
+    height: 300;
+    width: auto;
+}
+#image_container{
+    flex: 0 0 auto;
+}
+#main_header_container{
+    display: flex;
+}
+#main_info_container{
+    padding: 1em;
+}
+.title_eng {
+    font-family: Verdana, Arial;
+    font-size: 1.6em;
+    line-height: 1.5em;
+    margin:0
+}
+.dsc_sub {
+    font-family: Verdana, Arial;
+    color: #9b9b9b;
+    margin:0;
+    font-size: 1em;
+    line-height: 1.4em;
+}
+.section_title {
+    font-family: Verdana, Arial;
+    font-size: 1.3em;
+}

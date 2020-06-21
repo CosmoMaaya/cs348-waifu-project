@@ -1,6 +1,7 @@
 .dsc_td {
     height: 10em;
     padding: 1em;
+    vertical-align: top;
 }
 .dsc_anime_img {
     width: auto;
@@ -12,8 +13,13 @@
     font-family: Verdana, Arial;
     font-size: 1.6em;
     line-height: 1.5em;
-    margin:0
+    margin:0;
+    color: #001f3f;
 }
+.dsc_title_eng a {
+    color: #001f3f;
+}
+
 .dsc_sub {
     font-family: Verdana, Arial;
     font-family: Verdana, Arial;
