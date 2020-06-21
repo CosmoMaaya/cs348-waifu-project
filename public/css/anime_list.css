@@ -1,0 +1,30 @@
+.dsc_td {
+    height: 10em;
+    padding: 1em;
+    vertical-align: top;
+}
+.dsc_anime_img {
+    width: auto;
+    height: auto;
+    max-width: 6em;
+    max-height: 10em;
+}
+.dsc_title_eng {
+    font-family: Verdana, Arial;
+    font-size: 1.6em;
+    line-height: 1.5em;
+    margin:0;
+    color: #001f3f;
+}
+.dsc_title_eng a {
+    color: #001f3f;
+}
+
+.dsc_sub {
+    font-family: Verdana, Arial;
+    font-family: Verdana, Arial;
+    color: #9b9b9b;
+    margin:0;
+    font-size: 1em;
+    line-height: 1.4em;
+}

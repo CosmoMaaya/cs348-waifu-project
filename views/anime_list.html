@@ -1,0 +1,45 @@
+<html>
+<head>
+	<title>Browse Anime</title>
+	<link rel="stylesheet" href="css/anime_list.css">
+</head>
+<body>
+	<label>Sort By:</label>
+    <select id="inp_sort_field">
+        <option value="title" {% if defaults.sort_field == "title" %} selected="selected" {% endif %}>Title</option>
+        <option value="rating" {% if defaults.sort_field == "rating"  %} selected="selected" {% endif %}>Rating</option>
+    </select>
+    <select id="inp_sort_order">
+        <option value="descending" {% if defaults.sort_order == "descending" %} selected="selected" {% endif %}>Descending</option>
+        <option value="ascending" {% if defaults.sort_order == "ascending" %} selected="selected" {% endif %}>Ascending</option>
+    </select>
+    <input id="btn_refresh" type="button" value="Refresh">
+    <br>
+	<label>Page:</label>
+    <input id="btn_prev_page" type="button" value="<">
+    <span id="current_page_indicator">{{defaults.page}}</span>
+    <input id="btn_next_page" type="button" value=">">
+
+	<table id=main_list>
+		{% for anime in animeList %}
+		<tr>
+			<td class="dsc_td">
+                <img class="dsc_anime_img" src={{anime.img}} alt={{anime.title_eng}}>
+            </td>
+            <td class="dsc_td"><div class="dsc_info">
+                <p class="dsc_title_eng">
+                    <a href="/anime/{{anime.id}}" >{{anime.title_eng}}</a>
+                </p>
+                <div>
+                    <p class="dsc_sub dsc_title_native">{{anime.title_native}}</p>
+                    <p class="dsc_sub dsc_score">{{anime.score_mal}} / 10</p>
+                    <p class="dsc_sub dsc_anime_type">{{anime.type}}</p>
+                </div>
+            </div></td>
+		</tr>
+		{% endfor %}
+	</table>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="js/anime_list.js"></script>
+</html>
