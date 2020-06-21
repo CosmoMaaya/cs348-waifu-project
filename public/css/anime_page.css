@@ -28,3 +28,34 @@
     font-family: Verdana, Arial;
     font-size: 1.3em;
 }
+.character_list {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.character_list > div {
+    display: inline-block;
+    text-align: center;
+    margin: 14px;
+    width: 10em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+.character_list > div > div {
+    display: table;
+}
+.character_list > div > div > img{
+    max-height: 10em;
+    max-width: 7em;
+    margin-bottom: 1em;
+}
+.character_list > div > div > p{
+    max-height: 10em;
+    max-width: 7em;
+    white-space: initial;
+    text-align:center;
+    vertical-align: middle;
+    display: table-row;
+    margin-top:
+}

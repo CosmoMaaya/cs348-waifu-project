@@ -16,16 +16,18 @@
         </div>
     </div>
     
-    <div>
-        <p class="section_title">Main characters:</p>
-		{% for c in characterList %}
-            {% if c.role == "main" %}
+    <p class="section_title">Main characters:</p>
+    
+    <div class="character_list">
+		{% for c in characterList  %}
+            <div>
                 <div>
                     <img src={{c.img}}></img>
                     <p>{{c.name_eng}}</p>
                 </div>
-            {% endif %}
+            </div>
 		{% endfor %}
     </div>
 </body>
 </html>
+ 
