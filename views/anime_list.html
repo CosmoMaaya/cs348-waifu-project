@@ -1,0 +1,44 @@
+<html>
+<head>
+	<title>All_anime</title>
+	<link rel="stylesheet" href="css/anime_list_styles.css">
+</head>
+<body>
+	<label>Sort By:</label>
+	<form action="anime_list" method="POST">
+	    <select name="sort_field">
+            <option value="title" {% if defaults.sort_field == "title" %} selected="selected" {% endif %}>Title</option>
+            <option value="rating" {% if defaults.sort_field == "rating"  %} selected="selected" {% endif %}>Rating</option>
+        </select>
+	    <select name="sort_order">
+            <option value="descending" {% if defaults.sort_order == "descending" %} selected="selected" {% endif %}>Descending</option>
+            <option value="ascending" {% if defaults.sort_order == "ascending" %} selected="selected" {% endif %}>Ascending</option>
+        </select>
+		<input type="submit" value="Refresh">
+	</form>
+	<table id=main_list>
+		<!-- <tr>
+			<th>img</th>
+			<th>title_eng</th>
+			<th>title_native</th>
+			<th>score</th>
+			<th>type</th>
+		</tr> -->
+		{% for anime in animeList %}
+		<tr>
+			<td class="dsc_td">
+                <img class="dsc_anime_img" src={{anime.img}} alt={{anime.title_eng}}>
+            </td>
+            <td class="dsc_td"><div class="dsc_info">
+                <p class="dsc_title_eng">{{anime.title_eng}}</p>
+                <div>
+                    <p class="dsc_sub dsc_title_native">{{anime.title_native}}</p>
+                    <p class="dsc_sub dsc_score">{{anime.score_mal}} / 10</p>
+                    <p class="dsc_sub dsc_anime_type">{{anime.type}}</p>
+                </div>
+            </div></td>
+		</tr>
+		{% endfor %}
+	</table>
+</body>
+</html>
