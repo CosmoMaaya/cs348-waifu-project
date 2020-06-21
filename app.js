@@ -23,13 +23,14 @@ nunjucks.configure("views", {
 let pool;
 
 app.get("/", async (req, res) => {
-	try {
-		const queryRes = await pool.query("SELECT * FROM anime");
-		res.render("index.html", {waifuList: queryRes});
-	} catch(err) {
-		console.log(err);
-		res.status(500).send("database failed").end();
-	}
+	// try {
+	// 	const queryRes = await pool.query("SELECT * FROM anime");
+	// 	res.render("index.html", {waifuList: queryRes});
+	// } catch(err) {
+	// 	console.log(err);
+	// 	res.status(500).send("database failed").end();
+	// }
+	res.redirect('/anime_list');
 });
 
 app.post("/add", async (req, res) => {
