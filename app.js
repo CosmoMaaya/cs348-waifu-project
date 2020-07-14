@@ -163,6 +163,46 @@ app.post("/map_tag_to_anime", async (req, res) => {
   res.redirect("/");
 });
 
+app.get("/add_waifu_tag", async (req, res) => {
+	console.log(req.body);
+	console.log(req.query);
+	try {
+		await pool.query(
+			"INSERT INTO `waifu_tag` (name) VALUES (?)",
+			req.query["name"]
+		);
+	} catch (err) {
+		console.log(err);
+	}
+	res.redirect("/");
+});
+
+app.post("/map_tag_to_anime", async (req, res) => {
+  console.log(req.query);
+  try {
+    await pool.query(
+      "INSERT INTO `waifu_tag_mapping` (anime_id, tag_id) VALUES (?,?)",
+      [req.query["anime_id"], req.query["tag_id"]]
+    );
+  } catch (err) {
+    console.log(err);
+  }
+  res.redirect("/");
+});
+
+// app.post("/map_tag_to_waifu", async (req, res) => {
+// 	console.log(req.query);
+// 	try{
+// 		await pool.query(
+// 			"INSERT INTO `waifu_tag_mapping` (anime_id, tag_id, votes) VALUES (?, ?, 0)",
+// 			[req.query["anime_id"], req.query["tag_id"]]
+// 		);
+// 	} catch (err) {
+// 		console.log(err);
+// 	}
+// 	res.redirect("/");
+// });
+
 (async () => {
   try {
     pool = await mysql.createPool(config.database);
@@ -176,16 +216,3 @@ app.post("/map_tag_to_anime", async (req, res) => {
   }
 })();
 
-app.get("/add_waifu_tag", async (req, res) => {
-	console.log(req.body);
-	console.log(req.query);
-	try {
-		await pool.query{
-			"INSERT INTO `waifu_tag` (name) VALUES (?)",
-			req.query["name"]
-		};
-	} catch (err) {
-		console.log(err);
-	}
-	res.redirect("/");
-});
