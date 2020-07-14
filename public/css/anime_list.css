@@ -33,3 +33,7 @@
     display: none;
     overflow: hidden;
   }
+    
+#hidden_param_passer {
+    display: none;
+}

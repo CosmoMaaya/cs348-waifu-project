@@ -130,7 +130,10 @@ let anime_list_request = async (req, res) => {
 
 	const queryRes = await pool.query(query);
 	try {
-		res.render("anime_list.html", {animeList: queryRes, defaults: req.body});
+		res.render("anime_list.html", {
+			animeList: queryRes,
+			defaults: req.body,
+			search_params: JSON.stringify(req.body["search"])});
 	} catch(err) {
 		console.log(err);
 		res.status(500).send("database failed").end();
@@ -142,7 +145,7 @@ app.get("/anime_list", async (req, res) => {
 	req.body["sort_field"] = "rating";
 	req.body["sort_order"] = "descending";
 	req.body["page"] = 0;
-	req.body["search"] = '{}'
+	req.body["search"] = "{}"
 	await anime_list_request(req, res);
 });
 
