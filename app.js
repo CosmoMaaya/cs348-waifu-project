@@ -175,3 +175,17 @@ app.post("/map_tag_to_anime", async (req, res) => {
     console.log(err);
   }
 })();
+
+app.get("/add_waifu_tag", async (req, res) => {
+	console.log(req.body);
+	console.log(req.query);
+	try {
+		await pool.query{
+			"INSERT INTO `waifu_tag` (name) VALUES (?)",
+			req.query["name"]
+		};
+	} catch (err) {
+		console.log(err);
+	}
+	res.redirect("/");
+});
