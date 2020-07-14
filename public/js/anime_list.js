@@ -34,7 +34,7 @@ $("#btn_next_page").click(function() {make_page_change_request(1)})
 let update_search_fields = function(){
     data_parameters["search"]["title"] = $("#search_title").val()
     data_parameters["search"]["min_score"] = $("#search_score").val()
-    data_parameters["search"]["min_votes"] = $("#search_votes").val()
+    // data_parameters["search"]["min_votes"] = $("#search_votes").val()
 
 
     let builder = []

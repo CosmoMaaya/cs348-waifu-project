@@ -64,15 +64,15 @@ let anime_list_request = async (req, res) => {
 		if (requirements.hasOwnProperty('min_score') && requirements["min_score"] != null && requirements["min_score"] != ""){
 			let min_score = parseFloat(requirements["min_score"])
 			filter = filter.concat(
-				" score_mal >= " + min_score
+				" score >= " + min_score
 			)
 		}
-		if (requirements.hasOwnProperty('min_votes') && requirements["min_votes"] != null && requirements["min_votes"] != ""){
-			let min_votes = parseInt(requirements["min_votes"])
-			filter = filter.concat(
-				" votes_mal >= " + min_votes
-			)
-		}
+		// if (requirements.hasOwnProperty('min_votes') && requirements["min_votes"] != null && requirements["min_votes"] != ""){
+		// 	let min_votes = parseInt(requirements["min_votes"])
+		// 	filter = filter.concat(
+		// 		" votes_mal >= " + min_votes
+		// 	)
+		// }
 		if (requirements.hasOwnProperty('type') && requirements["type"] != null && requirements["type"] != ""){
 			let inp = strip_special_characters(requirements["type"]).split(" ")
 			let req = []
@@ -103,7 +103,7 @@ let anime_list_request = async (req, res) => {
 	req.body["page"] = Math.max(parseInt(req.body["page"]), 0)
 	let acceptedSortFields = {
 		"title": "title_eng",
-		"rating": "score_mal"
+		"rating": "score"
 	};
 	let acceptedSortOrder = {
 		"ascending": "ASC",
@@ -120,7 +120,7 @@ let anime_list_request = async (req, res) => {
 	`;
 	console.log(req.body)
 	query = utils.format_query(query, {
-		"fields": "title_eng, title_native, score_mal, type, img",
+		"fields": "title_eng, title_native, score, type, img",
 		"sort_field": acceptedSortFields[req.body["sort_field"]],
 		"sort_order": acceptedSortOrder[req.body["sort_order"]],
 		"start_from": req.body["page"] * 50,
@@ -154,18 +154,18 @@ app.post("/anime/:id/vote", async (req, res) => {
 
   let rating_query = `
     SELECT
-      score_mal
+      score
     FROM anime
     WHERE id = {anime_id}
   `;
   rating_query = utils.format_query(rating_query, {anime_id: anime_id});
   let rating_res = await pool.query(rating_query);
-  let existing_rating = parseFloat(rating_res[0].score_mal);
+  let existing_rating = parseFloat(rating_res[0].score);
   let user_rating = parseFloat(req.body.user_rating);
   let new_rating = Math.round((existing_rating * 100 + user_rating)/101 * 100) / 100;
 
   try {
-    await pool.query("UPDATE anime SET score_mal = ? WHERE id = ?", [new_rating, anime_id]);
+    await pool.query("UPDATE anime SET score = ? WHERE id = ?", [new_rating, anime_id]);
   } catch (err) {
     console.log(err);
   }
@@ -181,7 +181,7 @@ let anime_page_request = async (req, res) => {
 		WHERE id = {anime_id}
 	`;
   anime_info_query = utils.format_query(anime_info_query, {
-    fields: "title_eng, title_native, score_mal, type, img",
+    fields: "title_eng, title_native, score, type, img",
     anime_id: anime_id,
   });
 
@@ -196,8 +196,8 @@ let anime_page_request = async (req, res) => {
 	`;
   character_list_query = utils.format_query(character_list_query, {
     anime_id: anime_id,
-    fields: "name_eng, role, likes_ap / (likes_ap + dislikes_ap) as score, img",
-    sort_order: "likes_ap / (likes_ap + dislikes_ap)",
+    fields: "name_eng, likes / (likes + dislikes) as score, img",
+    sort_order: "likes / (likes + dislikes)",
   });
 
   let info_query_res = await pool.query(anime_info_query);
