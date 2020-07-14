@@ -196,7 +196,7 @@ let anime_page_request = async (req, res) => {
 	`;
   character_list_query = utils.format_query(character_list_query, {
     anime_id: anime_id,
-    fields: "name_eng, likes / (likes + dislikes) as score, img",
+    fields: "name_eng, id, likes / (likes + dislikes) as score, img",
     sort_order: "likes / (likes + dislikes)",
   });
 
@@ -231,6 +231,36 @@ let anime_page_request = async (req, res) => {
 };
 
 app.get("/anime/:id", anime_page_request);
+
+let waifu_page_request = async(req, res) => {
+	let waifu_id = parseInt(req.params.id);
+	let waifu_info_query = `
+		SELECT
+			{fields}
+		FROM waifu
+		WHERE id = {waifu_id}
+	`;
+
+	waifu_info_query = utils.format_query(waifu_info_query, {
+		fields : "name_eng, name_native, gender, hair_color, likes, dislikes, img",
+		waifu_id : waifu_id,
+	})
+
+	let waifu_info_res = await pool.query(waifu_info_query);
+
+	try {
+		res.render("waifu_page.html", {
+			//todo: add tag vote and may need modify the vote req.
+			waifuInfo: waifu_info_res[0],
+		});
+		
+	} catch (err){
+		console.log(err);
+		res.status(500).send("database failed").end();
+	}
+}
+
+app.get("/waifu/:id", waifu_page_request);
 
 //anime_tag
 
