@@ -137,12 +137,25 @@ app.get("/anime/:id", anime_page_request);
 //anime_tag
 
 app.post("/add_anime_tag", async (req, res) => {
-  console.log(req.body);
   console.log(req.query);
   try {
     await pool.query(
       "INSERT INTO `anime_tag` (name) VALUES (?)",
       req.query["name"]
+    );
+  } catch (err) {
+    console.log(err);
+  }
+  res.redirect("/");
+});
+
+//map_tag_to_anime
+app.post("/map_tag_to_anime", async (req, res) => {
+  console.log(req.query);
+  try {
+    await pool.query(
+      "INSERT INTO `anime_tag_mapping` (anime_id, tag_id) VALUES (?,?)",
+      [req.query["anime_id"], req.query["tag_id"]]
     );
   } catch (err) {
     console.log(err);
