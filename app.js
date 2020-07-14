@@ -190,6 +190,32 @@ app.post("/map_tag_to_waifu", async (req, res) => {
 	res.redirect("/");
 });
 
+app.post("/waifu_tag_vote", async (req, res) => {
+	console.log(req.query);
+	try{
+		await pool.query(
+			"UPDATE `waifu_tag_mapping` SET `votes` = votes + 1 WHERE `waifu_id` = ? AND `tag_id` = ?",
+			[req.query["waifu_id"], req.query["tag_id"]]
+		);
+	} catch (err) {
+		console.log(err);
+	}
+	res.redirect("/");
+});
+
+app.post("/waifu_tag_unvote", async (req, res) => {
+	console.log(req.query);
+	try{
+		await pool.query(
+			"UPDATE `waifu_tag_mapping` SET `votes` = votes - 1 WHERE `waifu_id` = ? AND `tag_id` = ?",
+			[req.query["waifu_id"], req.query["tag_id"]]
+		);
+	} catch (err){
+		console.log(err);
+	}
+	res.redirect("/");
+});
+
 (async () => {
   try {
     pool = await mysql.createPool(config.database);
