@@ -8,4 +8,7 @@ module.exports = {
         baseStr = baseStr.replace(/\s+/g, ' '); // Shorten query
         return baseStr;
     },
+    strip_special_characters: function(baseStr){
+        return baseStr.replace(/[^\w\s]/gi, '')
+    }
   };

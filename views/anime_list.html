@@ -4,6 +4,14 @@
 	<link rel="stylesheet" href="css/anime_list.css">
 </head>
 <body>
+    <button type="button" id="search_toggle">Open Search Options</button>
+    <div id="search_box">
+        <label>Title:</label>
+        <input type="text" id="search_title"><br>
+        <button type="button" id="search_request">Search</button>
+    </div>
+    <br><br>
+
 	<label>Sort By:</label>
     <select id="inp_sort_field">
         <option value="title" {% if defaults.sort_field == "title" %} selected="selected" {% endif %}>Title</option>

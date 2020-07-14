@@ -4,6 +4,7 @@ let make_update_page_request = function(data){
     $("<input>").attr("name", "sort_field").val(data["sort_field"]).appendTo(form);
     $("<input>").attr("name", "sort_order").val(data["sort_order"]).appendTo(form);
     $("<input>").attr("name", "page").val(data["page"]).appendTo(form);
+    $("<input>").attr("name", "search").val(JSON.stringify(data["search"])).appendTo(form);
     form.hide();
     form.appendTo($("body"))
     form.submit();
@@ -24,12 +25,37 @@ let make_page_change_request = function(change){
 $("#btn_prev_page").click(function() {make_page_change_request(-1)})
 $("#btn_next_page").click(function() {make_page_change_request(1)})
 
+let update_search_fields = function(){
+    data_parameters["search"]["title"] = $("#search_title").val()
+}
+
+$("#search_request").click(function() {
+    update_search_fields()
+    make_update_page_request(data_parameters)
+})
+
+$("#search_toggle").click(function() {
+    $('#search_box').toggle("slow");
+})
+
+$('#search_box input').keypress(function (e) {
+    if (e.which == 13) {
+        update_search_fields()
+        make_update_page_request(data_parameters)
+    }
+});
+
+
 var data_parameters = {}
 $(document).ready(function () {
     data_parameters["sort_field"] = $("#inp_sort_field").val();
     data_parameters["sort_order"] = $("#inp_sort_order").val();
     data_parameters["page"] = $("#current_page_indicator").text();
+    data_parameters["search"] = {
+        "title": null
+    }
     console.log("Loaded function called")
+    $('#search_box').hide();
 });
 
 
