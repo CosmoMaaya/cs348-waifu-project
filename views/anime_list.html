@@ -4,6 +4,58 @@
 	<link rel="stylesheet" href="css/anime_list.css">
 </head>
 <body>
+    <button type="button" id="search_toggle">Open Search Options</button>
+    <div id="search_box">
+        <table>
+            <tr>
+                <td><label>Title:</label></td>
+                <td>
+                    <input type="text" id="search_title">
+                </td>
+            </tr>
+            <tr>
+                <td><label>Min Score:</label></td>
+                <td>
+                    <input type="number" id="search_score" min="0" max="10">
+                </td>
+            </tr>
+            <tr>
+                <td><label>Min Votes:</label></td>
+                <td>
+                    <input type="number" id="search_votes" min="0" step="1">
+                </td>
+            </tr>
+            <tr>
+                <td><label>Type:</label></td>
+                <td>
+                    <div class="checkout_select">
+                        <input type="checkbox" id="stype_special" name="stype_special" checked>
+                        <label for="stype_manga">Special</label>
+                        <input type="checkbox" id="stype_tv" name="stype_tv" checked>
+                        <label for="stype_manga">TV</label>
+                        <input type="checkbox" id="stype_movie" name="stype_movie" checked>
+                        <label for="stype_manga">Movie</label>
+                    <div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Adapted From:</label></td>
+                <td>
+                    <div class="checkout_select">
+                        <input type="checkbox" id="sadapt_original" name="sadapt_original" checked>
+                        <label for="stype_manga">Original</label>
+                        <input type="checkbox" id="sadapt_light_novel" name="sadapt_light_novel" checked>
+                        <label for="stype_manga">Light Novel</label>
+                        <input type="checkbox" id="sadapt_manga" name="sadapt_manga" checked>
+                        <label for="stype_manga">Manga</label>
+                    <div>
+                </td>
+            </tr>
+        </table>
+        <button type="button" id="search_request">Search</button>
+    </div>
+    <br><br>
+
 	<label>Sort By:</label>
     <select id="inp_sort_field">
         <option value="title" {% if defaults.sort_field == "title" %} selected="selected" {% endif %}>Title</option>
