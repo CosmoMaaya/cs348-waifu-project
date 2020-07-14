@@ -11,8 +11,9 @@
         <div id="main_info_container">
             <p class="title_eng">{{animeInfo.title_eng}}</p>
             <p class="dsc_sub dsc_title_native">{{animeInfo.title_native}}</p>
-            <p class="dsc_sub dsc_score">{{animeInfo.score_mal}} / 10</p>
+            <p class="dsc_sub dsc_score">{{animeInfo.score}} / 10</p>
             <p class="dsc_sub dsc_anime_type">{{animeInfo.type}}</p>
+            <p class="dsc_sub dsc_anime_tag">{{animeTagInfo.name}}</p>
             <form action="{{animeIdLink}}/vote" method="POST">
                 <input type="number" name="user_rating" step="0.01" min="0" max="10">
                 <input type="submit" value="Submit rating">

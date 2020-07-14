@@ -200,13 +200,29 @@ let anime_page_request = async (req, res) => {
     sort_order: "likes / (likes + dislikes)",
   });
 
+  let anime_tags_query = `
+  		SELECT name FROM anime_tag 
+		INNER JOIN (
+			SELECT tag_id 
+		    FROM anime_tag_mapping
+		    WHERE anime_id = {anime_id}
+		) temp
+		ON anime_tag.id = temp.tag_id
+  `;
+
+  anime_tags_query = utils.format_query(anime_tags_query, {
+  	anime_id: anime_id,
+  });
+
   let info_query_res = await pool.query(anime_info_query);
   let character_list_res = await pool.query(character_list_query);
+  let anime_tag_res = await pool.query(anime_tags_query);
   try {
     res.render("anime_page.html", {
       animeInfo: info_query_res[0],
       characterList: character_list_res,
       animeIdLink: "/anime/"+anime_id,
+      animeTagInfo: anime_tag_res[0],
     });
   } catch (err) {
     console.log(err);
