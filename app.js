@@ -196,7 +196,7 @@ let anime_page_request = async (req, res) => {
 	`;
   character_list_query = utils.format_query(character_list_query, {
     anime_id: anime_id,
-    fields: "name_eng, id, likes / (likes + dislikes) as score, img",
+    fields: "name_eng, waifu_id, likes / (likes + dislikes) as score, img",
     sort_order: "likes / (likes + dislikes)",
   });
 
