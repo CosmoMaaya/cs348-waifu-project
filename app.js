@@ -148,6 +148,31 @@ app.get("/anime_list", async (req, res) => {
 	req.body["search"] = "{}"
 	await anime_list_request(req, res);
 });
+// add rating for anime
+app.post("/anime/:id/vote", async (req, res) => {
+  console.log(req.body);
+  let anime_id = parseInt(req.params.id);
+  let rating_query = `
+    SELECT
+      score_mal
+    FROM anime
+    WHERE id = {anime_id}
+  `;
+  rating_query = utils.format_query(rating_query, {anime_id: anime_id});
+  let rating_res = await pool.query(rating_query);
+  let existing_rating = parseFloat(rating_res[0].score_mal);
+  let user_rating = parseFloat(req.body.user_rating);
+  let new_rating = Math.round((existing_rating * 100 + user_rating)/101 * 100) / 100;
+  console.log(new_rating);
+  let update_query = "UPDATE anime SET score_mal = {new_rating} WHERE id = {anime_id}";
+  update_query = utils.format_query(update_query, {anime_id: anime_id, new_rating: new_rating});
+  try {
+    await pool.query(update_query);
+  } catch (err) {
+    console.log(err);
+  }
+  res.redirect("#");
+});
 
 let anime_page_request = async (req, res) => {
   let anime_id = parseInt(req.params.id);
