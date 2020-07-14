@@ -5,6 +5,7 @@ let make_update_page_request = function(data){
     $("<input>").attr("name", "sort_order").val(data["sort_order"]).appendTo(form);
     $("<input>").attr("name", "page").val(data["page"]).appendTo(form);
     $("<input>").attr("name", "search").val(JSON.stringify(data["search"])).appendTo(form);
+    $("<input>").attr("name", "type").val(data["type"]).appendTo(form);
     form.hide();
     form.appendTo($("body"))
     form.submit();
@@ -27,6 +28,27 @@ $("#btn_next_page").click(function() {make_page_change_request(1)})
 
 let update_search_fields = function(){
     data_parameters["search"]["title"] = $("#search_title").val()
+    data_parameters["search"]["min_score"] = $("#search_score").val()
+    data_parameters["search"]["min_votes"] = $("#search_votes").val()
+
+
+    let builder = []
+    let possibilities = ["special", "tv", "movie"]
+    for (let i in possibilities){
+        if ($("#stype_" + possibilities[i]).is(':checked')){
+            builder = builder.concat(possibilities[i])
+        }
+    }
+    data_parameters["search"]["type"] = builder.join(" ")
+
+    builder = []
+    possibilities = ["original", "light_novel", "manga"]
+    for (let i in possibilities){
+        if ($("#sadapt_" + possibilities[i]).is(':checked')){
+            builder = builder.concat(possibilities[i])
+        }
+    }
+    data_parameters["search"]["adapt"] = builder.join(" ")
 }
 
 $("#search_request").click(function() {

@@ -53,11 +53,44 @@ app.post("/add", async (req, res) => {
 let anime_list_request = async (req, res) => {
 	let build_search_filters = (requirements) => {
 		requirements = JSON.parse(requirements)
+		console.log(requirements)
 		let filter = []
-		if (requirements["title"] != null && requirements != ""){
+		if (requirements.hasOwnProperty('title') && requirements["title"] != null && requirements["title"] != ""){
 			let title_req = strip_special_characters(requirements["title"]).toLowerCase().replace(" ", "%")
 			filter = filter.concat(
 				"LOWER(title_eng) LIKE '%" + title_req + "%'"
+			)
+		}
+		if (requirements.hasOwnProperty('min_score') && requirements["min_score"] != null && requirements["min_score"] != ""){
+			let min_score = parseFloat(requirements["min_score"])
+			filter = filter.concat(
+				" score_mal >= " + min_score
+			)
+		}
+		if (requirements.hasOwnProperty('min_votes') && requirements["min_votes"] != null && requirements["min_votes"] != ""){
+			let min_votes = parseInt(requirements["min_votes"])
+			filter = filter.concat(
+				" votes_mal >= " + min_votes
+			)
+		}
+		if (requirements.hasOwnProperty('type') && requirements["type"] != null && requirements["type"] != ""){
+			let inp = strip_special_characters(requirements["type"]).split(" ")
+			let req = []
+			for (let i in inp){
+				req = req.concat(" LOWER(type) = '" + inp[i].toLowerCase() + "' ")
+			}
+			filter = filter.concat(
+				" (" + req.join(" OR ") + ") "
+			)
+		}
+		if (requirements.hasOwnProperty('adapt') && requirements["adapt"] != null && requirements["adapt"] != ""){
+			let inp = strip_special_characters(requirements["adapt"]).split(" ")
+			let req = []
+			for (let i in inp){
+				req = req.concat(" LOWER(source) = '" + inp[i].toLowerCase().replace("_", " ") + "' ")
+			}
+			filter = filter.concat(
+				" (" + req.join(" OR ") + ") "
 			)
 		}
 		if (filter.length == 0){
@@ -109,7 +142,7 @@ app.get("/anime_list", async (req, res) => {
 	req.body["sort_field"] = "rating";
 	req.body["sort_order"] = "descending";
 	req.body["page"] = 0;
-	req.body["search"] = '{"title": null}'
+	req.body["search"] = '{}'
 	await anime_list_request(req, res);
 });
 
