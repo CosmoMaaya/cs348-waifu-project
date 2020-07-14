@@ -11,7 +11,12 @@ let make_update_page_request = function(data){
     form.submit();
 }
 
+let set_search_fields_based_on_default = function(){
+    data_parameters["search"] = search_params
+}
+
 $("#btn_refresh").click(function() {
+    set_search_fields_based_on_default()
     data_parameters["sort_field"] = $("#inp_sort_field").val();
     data_parameters["sort_order"] = $("#inp_sort_order").val();
     data_parameters["page"] = 0;
@@ -76,6 +81,16 @@ $(document).ready(function () {
     data_parameters["search"] = {
         "title": null
     }
+
+    function decodeHtml(html) {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    }
+
+    search_params = decodeHtml(decodeHtml(search_params)).replace(/^"+|"+$/g, '')
+    search_params = JSON.parse(search_params)
+    
     console.log("Loaded function called")
     $('#search_box').hide();
 });
