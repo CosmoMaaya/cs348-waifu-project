@@ -186,18 +186,35 @@ let anime_page_request = async (req, res) => {
   });
 
   let character_list_query = `
-		SELECT
+		WITH waifu_info AS (
+		    SELECT *
+			FROM anime_to_waifu_mapping
+			INNER JOIN waifu		
+		    ON anime_to_waifu_mapping.waifu_id = waifu.id
+			WHERE anime_id = {anime_id}
+		) 
+		SELECT 
 			{fields}
-		FROM anime_to_waifu_mapping
-		INNER JOIN waifu
-		ON anime_to_waifu_mapping.waifu_id = waifu.id
-		WHERE anime_id = {anime_id}
-		ORDER BY {sort_order}
+		FROM (
+		    SELECT *, 1 AS filter
+		    FROM waifu_info
+		    WHERE role = "main"
+		    UNION ALL
+		    SELECT *, 2 AS filter
+		    FROM waifu_info
+		    WHERE role = "supporting"
+		    UNION ALL
+		    SELECT *, 3 AS filter
+		    FROM waifu_info
+		    WHERE role = "minor"
+		 	) tmp
+		ORDER BY filter, {sort_order}
 	`;
+	
   character_list_query = utils.format_query(character_list_query, {
     anime_id: anime_id,
-    fields: "name_eng, waifu_id, likes / (likes + dislikes) as score, img",
-    sort_order: "likes / (likes + dislikes)",
+    fields: "name_eng, waifu_id, role, likes / (likes + dislikes) as score, img",
+    sort_order: "likes / (likes + dislikes) DESC",
   });
 
   let anime_tags_query = `
