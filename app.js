@@ -16,6 +16,7 @@ const config = JSON.parse(
 );
 
 const app = express();
+let comment = "";
 
 app.disable("x-powered-by");
 app.use(express.static("public"));
@@ -128,6 +129,7 @@ let anime_list_request = async (req, res) => {
 	});
 	console.log(query)
 
+	comment = "Filter and sort anime list";
 	const queryRes = await pool.query(query);
 	try {
 		res.render("anime_list.html", {
@@ -159,12 +161,14 @@ app.post("/anime/:id/vote", async (req, res) => {
     WHERE id = {anime_id}
   `;
   rating_query = utils.format_query(rating_query, {anime_id: anime_id});
+  comment = "Get the current score before voting computation";
   let rating_res = await pool.query(rating_query);
   let existing_rating = parseFloat(rating_res[0].score);
   let user_rating = parseFloat(req.body.user_rating);
   let new_rating = Math.round((existing_rating * 100 + user_rating)/101 * 100) / 100;
 
   try {
+    comment = "Set the score after the voting computation";
     await pool.query("UPDATE anime SET score = ? WHERE id = ?", [new_rating, anime_id]);
   } catch (err) {
     console.log(err);
@@ -230,9 +234,11 @@ let anime_page_request = async (req, res) => {
   anime_tags_query = utils.format_query(anime_tags_query, {
   	anime_id: anime_id,
   });
-
+  comment = "Get the detailed info for an anime";
   let info_query_res = await pool.query(anime_info_query);
+  comment = "Get a list of characters for an anime";
   let character_list_res = await pool.query(character_list_query);
+  comment = "Get a list of tags for an anime";
   let anime_tag_res = await pool.query(anime_tags_query);
   try {
     res.render("anime_page.html", {
@@ -263,6 +269,7 @@ let waifu_page_request = async(req, res) => {
 		waifu_id : waifu_id,
 	})
 
+    comment = "Get detailed info for a waifu";
 	let waifu_info_res = await pool.query(waifu_info_query);
 
 	try {
@@ -284,6 +291,7 @@ app.get("/waifu/:id", waifu_page_request);
 app.post("/add_anime_tag", async (req, res) => {
   console.log(req.query);
   try {
+	comment = "Add a brand new tag for animes";
     await pool.query(
       "INSERT INTO `anime_tag` (name) VALUES (?)",
       req.query["name"]
@@ -298,6 +306,7 @@ app.post("/add_anime_tag", async (req, res) => {
 app.post("/map_tag_to_anime", async (req, res) => {
   console.log(req.query);
   try {
+	comment = "Add an existing tag to an anime";
     await pool.query(
       "INSERT INTO `anime_tag_mapping` (anime_id, tag_id) VALUES (?,?)",
       [req.query["anime_id"], req.query["tag_id"]]
@@ -312,6 +321,7 @@ app.get("/add_waifu_tag", async (req, res) => {
 	console.log(req.body);
 	console.log(req.query);
 	try {
+		comment = "Add a brand new tag for waifus";
 		await pool.query(
 			"INSERT INTO `waifu_tag` (name) VALUES (?)",
 			req.query["name"]
@@ -325,6 +335,7 @@ app.get("/add_waifu_tag", async (req, res) => {
 app.post("/map_tag_to_waifu", async (req, res) => {
 	console.log(req.query);
 	try{
+		comment = "Add an existing tag to a waifu";
 		await pool.query(
 			"INSERT INTO `waifu_tag_mapping` (anime_id, tag_id, votes) VALUES (?, ?, 0)",
 			[req.query["waifu_id"], req.query["tag_id"]]
@@ -338,6 +349,7 @@ app.post("/map_tag_to_waifu", async (req, res) => {
 app.post("/waifu_tag_vote", async (req, res) => {
 	console.log(req.query);
 	try{
+		comment = "Vote for a tag attached to a waifu";
 		await pool.query(
 			"UPDATE `waifu_tag_mapping` SET `votes` = votes + 1 WHERE `waifu_id` = ? AND `tag_id` = ?",
 			[req.query["waifu_id"], req.query["tag_id"]]
@@ -351,6 +363,7 @@ app.post("/waifu_tag_vote", async (req, res) => {
 app.post("/waifu_tag_unvote", async (req, res) => {
 	console.log(req.query);
 	try{
+		comment = "Remove a vote for a tag attached to a waifu";
 		await pool.query(
 			"UPDATE `waifu_tag_mapping` SET `votes` = votes - 1 WHERE `waifu_id` = ? AND `tag_id` = ?",
 			[req.query["waifu_id"], req.query["tag_id"]]
@@ -364,6 +377,17 @@ app.post("/waifu_tag_unvote", async (req, res) => {
 (async () => {
   try {
     pool = await mysql.createPool(config.database);
+
+	if(process.argv.includes("dumpsql")) {
+		const oldQuery = pool.query;
+		pool.query = function(...args) {
+			console.error("/* " + comment + " */");
+			console.error("/* Code location: " + new Error().stack.split("\n")[2].replace(__dirname + "/", "").trim() + " */");
+			console.error(mysql.format(...args).trim() + ";");
+			console.error();
+			return oldQuery.call(pool, ...args);
+		}
+	}
 
     const port = process.env.PORT || 8080;
     app.listen(port, () => {
