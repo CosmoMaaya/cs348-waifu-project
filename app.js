@@ -245,7 +245,7 @@ let anime_page_request = async (req, res) => {
       animeInfo: info_query_res[0],
       characterList: character_list_res,
       animeIdLink: "/anime/"+anime_id,
-      animeTagInfo: anime_tag_res[0],
+      animeTagInfo: anime_tag_res,
     });
   } catch (err) {
     console.log(err);
