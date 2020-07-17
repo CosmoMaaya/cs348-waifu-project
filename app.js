@@ -263,19 +263,33 @@ let waifu_page_request = async(req, res) => {
 		FROM waifu
 		WHERE id = {waifu_id}
 	`;
+	let waifu_tags_query = `
+	SELECT name FROM waifu_tag 
+	INNER JOIN (
+		SELECT tag_id 
+		FROM waifu_tag_mapping
+		WHERE waifu_id = {waifu_id}
+	) temp
+	ON waifu_tag.id = temp.tag_id
+	`;
 
 	waifu_info_query = utils.format_query(waifu_info_query, {
 		fields : "name_eng, name_native, gender, hair_color, likes, dislikes, img",
 		waifu_id : waifu_id,
-	})
+	});
+	waifu_tags_query = utils.format_query(waifu_tags_query, {
+		waifu_id: waifu_id
+	});
 
     comment = "Get detailed info for a waifu";
 	let waifu_info_res = await pool.query(waifu_info_query);
+	let waifu_tags_res = await pool.query(waifu_tags_query);
 
 	try {
 		res.render("waifu_page.html", {
 			//todo: add tag vote and may need modify the vote req.
 			waifuInfo: waifu_info_res[0],
+			waifuTags: waifu_tags_res
 		});
 		
 	} catch (err){

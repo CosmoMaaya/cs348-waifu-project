@@ -24,10 +24,14 @@
                         <th>Hair Color</th>
                         <td style="text-align:center;">{{waifuInfo.hair_color}}</td>
                     </tr>
-<!--                     <tr>
+                     <tr>
                         <th>Tags</th>
-                        <td style="text-align:center;">{{waifuInfo.tags}}</td>
-                    </tr> -->
+                        <td style="text-align:center;">
+                            {%for t in waifuTags %}
+                            <p>{{t.name}}</p>
+                            {% endfor %}
+                        </td>
+                    </tr> 
                     <tr>
                         <th>Likes</th>
                         <td style="text-align:center;">{{waifuInfo.likes}}</td>
