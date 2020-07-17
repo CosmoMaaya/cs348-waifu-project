@@ -18,8 +18,16 @@
                 <input type="number" name="user_rating" step="0.01" min="0" max="10">
                 <input type="submit" value="Submit rating">
             </form>
+            <form action="{{animeIdLink}}/add_anime_tag" method="POST">
+                <input type="text" name="tagName" placeholder="Tag name">
+                <input type="submit" value="Submit tag">
+            </form>
         </div>
     </div>
+    <p class="section_title">Tags:</p>
+    {%for t in animeTagInfo %}
+    <span> {{t.name}} </span>
+    {% endfor %}
     
     <p class="section_title">Main characters:</p>
     

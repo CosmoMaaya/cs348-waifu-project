@@ -300,20 +300,35 @@ let waifu_page_request = async(req, res) => {
 
 app.get("/waifu/:id", waifu_page_request);
 
-//anime_tag
+//Add anime_tag
 
-app.post("/add_anime_tag", async (req, res) => {
-  console.log(req.query);
+app.post("/anime/:id/add_anime_tag", async (req, res) => {
+
   try {
-	comment = "Add a brand new tag for animes";
+	let tag_id;
+	// Try to search for the tag id if it already exists
+	let tag_id_res = await pool.query("SELECT id FROM anime_tag WHERE name = (?)", req.body.tagName);
+
+	if(tag_id_res.length == 0){
+		// Doesn't already exist? Insert it
+		let insert_new_tag_res = await pool.query(
+			"INSERT INTO `anime_tag` (name) VALUES (?)",
+			req.body.tagName
+		);
+		tag_id = insert_new_tag_res.insertId;
+	}else{
+		tag_id = tag_id_res[0].id;
+	}
+	// // Insert into the mapping
     await pool.query(
-      "INSERT INTO `anime_tag` (name) VALUES (?)",
-      req.query["name"]
+      "INSERT INTO `anime_tag_mapping` (anime_id, tag_id) VALUES (?,?)",
+      [req.params.id, tag_id]
     );
   } catch (err) {
     console.log(err);
   }
-  res.redirect("/");
+  // original URL is /anime/:id/add_anime_tag. Remove last 14 chars to get anime page
+  res.redirect(req.originalUrl.slice(0, -14));
 });
 
 //map_tag_to_anime
