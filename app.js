@@ -282,13 +282,10 @@ let waifu_page_request = async (req, res) => {
 		WHERE id = {waifu_id}
 	`;
   let waifu_tags_query = `
-	SELECT name FROM waifu_tag 
-	INNER JOIN (
-		SELECT tag_id 
-		FROM waifu_tag_mapping
-		WHERE waifu_id = {waifu_id}
-	) temp
-	ON waifu_tag.id = temp.tag_id
+	SELECT waifu_tag.id, waifu_tag.name, waifu_tag_mapping.votes
+	FROM waifu_tag
+	INNER JOIN waifu_tag_mapping
+	ON waifu_tag_mapping.waifu_id = {waifu_id} AND waifu_tag.id = waifu_tag_mapping.tag_id
 	`;
 
   waifu_info_query = utils.format_query(waifu_info_query, {
@@ -302,7 +299,6 @@ let waifu_page_request = async (req, res) => {
   comment = "Get detailed info for a waifu";
   let waifu_info_res = await pool.query(waifu_info_query);
   let waifu_tags_res = await pool.query(waifu_tags_query);
-
   try {
     res.render("waifu_page.html", {
       //todo: add tag vote and may need modify the vote req.
@@ -431,32 +427,34 @@ app.post("/map_tag_to_waifu", async (req, res) => {
   res.redirect("/");
 });
 
-app.post("/waifu_tag_vote", async (req, res) => {
-  console.log(req.query);
+app.post("/waifu/:id/waifu_tag_vote", async (req, res) => {
+  let waifuID = req.params.id;
+  let tagID = req.body["tagID"];
   try {
     comment = "Vote for a tag attached to a waifu";
     await pool.query(
       "UPDATE `waifu_tag_mapping` SET `votes` = votes + 1 WHERE `waifu_id` = ? AND `tag_id` = ?",
-      [req.query["waifu_id"], req.query["tag_id"]]
+      [waifuID, tagID]
     );
   } catch (err) {
     console.log(err);
   }
-  res.redirect("/");
+  res.redirect(req.originalUrl.slice(0, -14));
 });
 
-app.post("/waifu_tag_unvote", async (req, res) => {
-  console.log(req.query);
+app.post("/waifu/:id/waifu_tag_unvote", async (req, res) => {
+  let waifuID = req.params.id;
+  let tagID = req.body["tagID"];
   try {
     comment = "Remove a vote for a tag attached to a waifu";
     await pool.query(
       "UPDATE `waifu_tag_mapping` SET `votes` = votes - 1 WHERE `waifu_id` = ? AND `tag_id` = ?",
-      [req.query["waifu_id"], req.query["tag_id"]]
+      [waifuID, tagID]
     );
   } catch (err) {
     console.log(err);
   }
-  res.redirect("/");
+  res.redirect(req.originalUrl.slice(0, -16));
 });
 
 (async () => {

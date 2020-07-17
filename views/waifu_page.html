@@ -10,7 +10,7 @@
         </div>
         <div id="main_info_container">
             <p class="title_eng">{{waifuInfo.name_eng}}</p>
-            <table border="1" cellpadding="1" cellspacing="1" style="width: :100%;"> 
+            <table border="1" cellpadding="1" cellspacing="1" style="width: 100%;"> 
                 <tbody>
                     <tr>
                         <th>Japanese Name</th>
@@ -28,7 +28,31 @@
                         <th>Tags</th>
                         <td style="text-align:center;">
                             {%for t in waifuTags %}
-                            <p>{{t.name}}</p>
+                            <div style="display : flex; justify-content: space-between">
+                                <div style="display : flex;">
+                                    <div style="text-align : center; margin-right: 1rem;">
+                                        <a>{{t.name}}</a>
+                                    </div>
+                                </div>
+                                <div style="display : flex;">
+                                    <div style="text-align : center;"> 
+                                        <a>{{t.votes}}</a>
+                                        
+                                    </div>
+                                    <div style="text-align : center;"> 
+                                        <form  action="{{waifuIDLink}}/waifu_tag_vote" method="POST">
+                                            <input type="hidden" name="tagID" value={{t.id}}>
+                                            <input type="submit" value="+1">
+                                        </form>
+                                    </div>
+                                    <div style="text-align : center;"> 
+                                        <form  action="{{waifuIDLink}}/waifu_tag_unvote" method="POST">
+                                            <input type="hidden" name="tagID" value={{t.id}}>
+                                            <input type="submit" value="-1">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             {% endfor %}
                         </td>
                     </tr> 
@@ -41,7 +65,7 @@
             <div style="margin: 1rem;">
                 <form action="{{waifuIDLink}}/add_waifu_tag" method="POST">
                     <input type="text" name="tagName" placeholder="Tag name">
-                    <input type="submit" value="Submit tag">
+                    <input type="submit" value="Submit Tag">
                 </form>
             </div>
     </div>
