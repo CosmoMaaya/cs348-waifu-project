@@ -318,8 +318,17 @@ app.post("/anime/:id/add_anime_tag", async (req, res) => {
 		tag_id = insert_new_tag_res.insertId;
 	}else{
 		tag_id = tag_id_res[0].id;
+		// Return if it already exists in the mapping
+		let tag_mapping_res = await pool.query(
+			"SELECT * FROM anime_tag_mapping WHERE anime_id = (?) AND tag_id = (?)", 
+			[req.params.id, tag_id]
+		);
+		if(tag_mapping_res.length > 0) {
+			console.log("already exists"); 
+			res.redirect(req.originalUrl.slice(0, -14)); return;
+		}
 	}
-	// // Insert into the mapping
+	// Insert into the mapping
     await pool.query(
       "INSERT INTO `anime_tag_mapping` (anime_id, tag_id) VALUES (?,?)",
       [req.params.id, tag_id]
