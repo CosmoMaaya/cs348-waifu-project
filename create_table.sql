@@ -1,11 +1,11 @@
 CREATE TABLE anime ( 
 	id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	id_mal VARCHAR(255) CHARACTER SET ascii,
+	id_ap VARCHAR(255) CHARACTER SET ascii,
 	title_eng VARCHAR(255) NOT NULL,
 	title_native VARCHAR(255),
 	title_alt VARCHAR(1023),
-	votes_mal INT UNSIGNED,
-	score_mal DECIMAL(4, 2),
-	id_mal INT UNSIGNED,
+	score DECIMAL(4, 2),
 	premiered VARCHAR(31),
 	type VARCHAR(15),
 	episodes INT UNSIGNED,
@@ -13,45 +13,51 @@ CREATE TABLE anime (
 	source VARCHAR(31),
 	link_mal VARCHAR(255),
 	link_ap VARCHAR(255),
-	img VARCHAR(255)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+	img VARCHAR(255),
+	INDEX (score)
+) CHARACTER SET utf8mb4;
 
 CREATE TABLE anime_tag (
 	id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	name VARCHAR(255) NOT NULL
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+) CHARACTER SET utf8mb4;
 
 CREATE TABLE anime_tag_mapping (
 	anime_id BIGINT UNSIGNED NOT NULL,
 	tag_id BIGINT UNSIGNED NOT NULL,
+	PRIMARY KEY (anime_id, tag_id),
 	FOREIGN KEY (anime_id) REFERENCES anime (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (tag_id) REFERENCES anime_tag (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE waifu (
 	id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	id_mal VARCHAR(255) CHARACTER SET ascii,
+	id_ap VARCHAR(255) CHARACTER SET ascii,
 	name_eng VARCHAR(255) NOT NULL,
 	name_native VARCHAR(255),
 	name_alt VARCHAR(255),
 	gender VARCHAR(15),
-	role VARCHAR(31),
 	hair_color VARCHAR(31),
-	likes_ap INT,
-	dislikes_ap INT,
+	likes INT,
+	dislikes INT,
 	link_ap VARCHAR(255),
 	link_mal VARCHAR(255),
-	img VARCHAR(255)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+	img VARCHAR(255),
+	INDEX (likes),
+	INDEX (dislikes)
+) CHARACTER SET utf8mb4;
 
 CREATE TABLE waifu_tag (
 	id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	name VARCHAR(255) NOT NULL
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+) CHARACTER SET utf8mb4;
 
 CREATE TABLE waifu_tag_mapping (
 	waifu_id BIGINT UNSIGNED NOT NULL,
 	tag_id BIGINT UNSIGNED NOT NULL,
 	votes INT UNSIGNED DEFAULT 0 NOT NULL,
+	PRIMARY KEY (waifu_id, tag_id),
 	FOREIGN KEY (waifu_id) REFERENCES waifu (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (tag_id) REFERENCES waifu_tag (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -59,6 +65,9 @@ CREATE TABLE waifu_tag_mapping (
 CREATE TABLE anime_to_waifu_mapping (
 	anime_id BIGINT UNSIGNED NOT NULL,
 	waifu_id BIGINT UNSIGNED NOT NULL,
+	role VARCHAR(31) CHARACTER SET ascii,
+	PRIMARY KEY (anime_id, waifu_id),
 	FOREIGN KEY (anime_id) REFERENCES anime (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (waifu_id) REFERENCES waifu (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+

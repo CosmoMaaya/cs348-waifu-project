@@ -39,17 +39,17 @@ app.get("/", async (req, res) => {
   res.redirect("/anime_list");
 });
 
-app.post("/add", async (req, res) => {
-  console.log(req.body);
-  try {
-    await pool.query("INSERT INTO myanimelist (title) VALUES (?)", [
-      req.body.title,
-    ]);
-  } catch (err) {
-    console.log(err);
-  }
-  res.redirect("/");
-});
+//app.post("/add", async (req, res) => {
+//  console.log(req.body);
+//  try {
+//    await pool.query("INSERT INTO myanimelist (title) VALUES (?)", [
+//      req.body.title,
+//    ]);
+//  } catch (err) {
+//    console.log(err);
+//  }
+//  res.redirect("/");
+//});
 
 let anime_list_request = async (req, res) => {
   let build_search_filters = (requirements) => {
@@ -298,6 +298,7 @@ let waifu_page_request = async (req, res) => {
 
   comment = "Get detailed info for a waifu";
   let waifu_info_res = await pool.query(waifu_info_query);
+  comment = "Get tag info for a waifu";
   let waifu_tags_res = await pool.query(waifu_tags_query);
   try {
     res.render("waifu_page.html", {
@@ -319,14 +320,14 @@ app.get("/waifu/:id", waifu_page_request);
 app.post("/anime/:id/add_anime_tag", async (req, res) => {
   try {
     let tag_id;
-    // Try to search for the tag id if it already exists
+    comment = "Try to search for the anime tag id if it already exists";
     let tag_id_res = await pool.query(
       "SELECT id FROM anime_tag WHERE name = (?)",
       req.body.tagName
     );
 
     if (tag_id_res.length == 0) {
-      // Doesn't already exist? Insert it
+      comment = "Anime tag id doesn't already exist? Insert it";
       let insert_new_tag_res = await pool.query(
         "INSERT INTO `anime_tag` (name) VALUES (?)",
         req.body.tagName
@@ -334,7 +335,7 @@ app.post("/anime/:id/add_anime_tag", async (req, res) => {
       tag_id = insert_new_tag_res.insertId;
     } else {
       tag_id = tag_id_res[0].id;
-      // Return if it already exists in the mapping
+      comment = "Check if tag is already attached to an anime";
       let tag_mapping_res = await pool.query(
         "SELECT * FROM anime_tag_mapping WHERE anime_id = (?) AND tag_id = (?)",
         [req.params.id, tag_id]
@@ -345,7 +346,7 @@ app.post("/anime/:id/add_anime_tag", async (req, res) => {
         return;
       }
     }
-    // Insert into the mapping
+    comment = "Attach an anime tag to an anime";
     await pool.query(
       "INSERT INTO `anime_tag_mapping` (anime_id, tag_id) VALUES (?,?)",
       [req.params.id, tag_id]
@@ -375,14 +376,14 @@ app.post("/map_tag_to_anime", async (req, res) => {
 app.post("/waifu/:id/add_waifu_tag", async (req, res) => {
   try {
     let tag_id;
-    // Try to search for the tag id if it already exists
+    comment = "Try to search for the waifu tag id if it already exists";
     let tag_id_res = await pool.query(
       "SELECT id FROM waifu_tag WHERE name = (?)",
       req.body.tagName
     );
 
     if (tag_id_res.length == 0) {
-      // Doesn't already exist? Insert it
+      comment = "Waifu tag id doesn't already exist? Insert it";
       let insert_new_tag_res = await pool.query(
         "INSERT INTO `waifu_tag` (name) VALUES (?)",
         req.body.tagName
@@ -390,7 +391,7 @@ app.post("/waifu/:id/add_waifu_tag", async (req, res) => {
       tag_id = insert_new_tag_res.insertId;
     } else {
       tag_id = tag_id_res[0].id;
-      // Return if it already exists in the mapping
+      comment = "Check if tag is already attached to an waifu";
       let tag_mapping_res = await pool.query(
         "SELECT * FROM waifu_tag_mapping WHERE waifu_id = (?) AND tag_id = (?)",
         [req.params.id, tag_id]
@@ -401,7 +402,7 @@ app.post("/waifu/:id/add_waifu_tag", async (req, res) => {
         return;
       }
     }
-    // Insert into the mapping
+    comment = "Attach a waifu tag to a waifu";
     await pool.query(
       "INSERT INTO `waifu_tag_mapping` (waifu_id, tag_id) VALUES (?,?)",
       [req.params.id, tag_id]
