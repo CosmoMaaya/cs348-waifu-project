@@ -1,0 +1,24 @@
+.tt-suggestion {
+    width: 100%;
+    line-height: 30px;
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-top: none;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.tt-suggestion:hover, .tt-cursor {
+	background-color: #e0e0e0;
+}
+
+.tt-menu {
+	width: 100%;
+	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.twitter-typeahead {
+	width: 100%;
+}

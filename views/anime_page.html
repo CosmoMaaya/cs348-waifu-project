@@ -4,6 +4,8 @@
 	<link rel="stylesheet" href="/css/anime_page.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.11.0/jquery.typeahead.min.css">
+	<link rel="stylesheet" href="/css/tags.css">
 </head>
 <body>
 	<div class="modal fade" id="submitTag" tabindex="-1" role="dialog">
@@ -17,7 +19,7 @@
 		  </div>
 		  <form action="{{animeIdLink}}/add_anime_tag" method="POST">
 			  <div class="modal-body">
-				<input class="form-control" type="text" name="tagName" placeholder="Tag name" required>
+				<input class="form-control anime-tag-input" type="text" name="tagName" placeholder="Tag name" required autocomplete="off">
 			  </div>
 			  <div class="modal-footer submit-footer">
 				  <button class="btn btn-primary submit-tag" type="submit">Submit Tag</button>
@@ -92,6 +94,9 @@
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+	<script src="/js/typeahead.bundle.min.js"></script>
+	<script src="/js/tags.js"></script>
+	<script src="/js/anime_page.js"></script>
 </body>
 </html>
  

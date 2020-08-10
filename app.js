@@ -316,6 +316,28 @@ let waifu_page_request = async (req, res) => {
 
 app.get("/waifu/:id", waifu_page_request);
 
+app.get("/allWaifuTags", async(req, res) => {
+	comment = "List all waifu tags";
+	const queryRes = await pool.query("SELECT name FROM waifu_tag");
+	const result = [];
+	queryRes.forEach(e => {
+		result.push(e.name);
+	});
+
+	res.end(JSON.stringify(result));
+});
+
+app.get("/allAnimeTags", async(req, res) => {
+	comment = "List all anime tags";
+	const queryRes = await pool.query("SELECT name FROM anime_tag");
+	const result = [];
+	queryRes.forEach(e => {
+		result.push(e.name);
+	});
+
+	res.end(JSON.stringify(result));
+});
+
 //Add anime_tag
 
 app.post("/anime/:id/add_anime_tag", async (req, res) => {

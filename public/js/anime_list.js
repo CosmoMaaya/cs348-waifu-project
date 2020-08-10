@@ -61,9 +61,9 @@ $("#search_request").click(function() {
     make_update_page_request(data_parameters)
 })
 
-$("#search_toggle").click(function() {
-    $('#search_box').toggle("slow");
-})
+//$("#search_toggle").click(function() {
+//    $('#search_box').toggle("slow");
+//})
 
 $('#search_box input').keypress(function (e) {
     if (e.which == 13) {
@@ -92,7 +92,7 @@ $(document).ready(function () {
     search_params = JSON.parse(search_params)
     
     console.log("Loaded function called")
-    $('#search_box').hide();
+//    $('#search_box').hide();
 });
 
 
