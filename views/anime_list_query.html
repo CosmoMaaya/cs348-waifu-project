@@ -1,0 +1,18 @@
+{% for anime in animeList %}
+<tr>
+	<td class="dsc_td">
+		<img class="dsc_anime_img" src={{anime.img}} alt={{anime.title_eng}}>
+	</td>
+	<td class="dsc_td"><div class="dsc_info">
+			<p class="dsc_title_eng">
+			<a href="/anime/{{anime.id}}" >{{anime.title_eng}}</a>
+			</p>
+			<div>
+				<p class="dsc_sub dsc_title_native">{{anime.title_native}}</p>
+				<p class="dsc_sub dsc_score">{{anime.score}} / 10</p>
+				<p class="dsc_sub dsc_anime_type">{{anime.type}}</p>
+			</div>
+		</div></td>
+</tr>
+{% endfor %}
+

@@ -21,6 +21,7 @@ let comment = "";
 app.disable("x-powered-by");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 nunjucks.configure("views", {
   autoescape: true,
   express: app,
@@ -31,11 +32,11 @@ let pool;
 
 app.get("/", async (req, res) => {
   // try {
-  // 	const queryRes = await pool.query("SELECT * FROM anime");
-  // 	res.render("index.html", {waifuList: queryRes});
+  //     const queryRes = await pool.query("SELECT * FROM anime");
+  //     res.render("index.html", {waifuList: queryRes});
   // } catch(err) {
-  // 	console.log(err);
-  // 	res.status(500).send("database failed").end();
+  //     console.log(err);
+  //     res.status(500).send("database failed").end();
   // }
   res.redirect("/anime_list");
 });
@@ -52,60 +53,51 @@ app.get("/", async (req, res) => {
 //  res.redirect("/");
 //});
 
-let anime_list_request = async (req, res) => {
+app.post("/anime_list_query", async (req, res) => {
   let build_search_filters = (requirements) => {
-    requirements = JSON.parse(requirements);
     console.log(requirements);
     let filter = [];
-    if (
-      requirements.hasOwnProperty("title") &&
-      requirements["title"] != null &&
-      requirements["title"] != ""
-    ) {
+    if (requirements["title"]) {
       let title_req = strip_special_characters(requirements["title"])
         .toLowerCase()
         .replace(" ", "%");
       filter = filter.concat("LOWER(title_eng) LIKE '%" + title_req + "%'");
     }
-    if (
-      requirements.hasOwnProperty("min_score") &&
-      requirements["min_score"] != null &&
-      requirements["min_score"] != ""
-    ) {
+    if (requirements["min_score"]) {
       let min_score = parseFloat(requirements["min_score"]);
       filter = filter.concat(" score >= " + min_score);
     }
     // if (requirements.hasOwnProperty('min_votes') && requirements["min_votes"] != null && requirements["min_votes"] != ""){
-    // 	let min_votes = parseInt(requirements["min_votes"])
-    // 	filter = filter.concat(
-    // 		" votes_mal >= " + min_votes
-    // 	)
+    //     let min_votes = parseInt(requirements["min_votes"])
+    //     filter = filter.concat(
+    //         " votes_mal >= " + min_votes
+    //     )
     // }
-    if (
-      requirements.hasOwnProperty("type") &&
-      requirements["type"] != null &&
-      requirements["type"] != ""
-    ) {
-      let inp = strip_special_characters(requirements["type"]).split(" ");
+    if (requirements["type"]) {
+      let inp = requirements["type"];
       let req = [];
       for (let i in inp) {
-        req = req.concat(" LOWER(type) = '" + inp[i].toLowerCase() + "' ");
+        req = req.concat(" LOWER(type) = '" + strip_special_characters(inp[i]).toLowerCase() + "' ");
       }
-      filter = filter.concat(" (" + req.join(" OR ") + ") ");
+      if(req.length != 0) {
+        filter = filter.concat(" (" + req.join(" OR ") + ") ");
+      } else {
+		filter = filter.concat(" FALSE ");
+	  }
     }
-    if (
-      requirements.hasOwnProperty("adapt") &&
-      requirements["adapt"] != null &&
-      requirements["adapt"] != ""
-    ) {
-      let inp = strip_special_characters(requirements["adapt"]).split(" ");
+    if (requirements["adapt"]) {
+      let inp = requirements["adapt"];
       let req = [];
       for (let i in inp) {
         req = req.concat(
-          " LOWER(source) = '" + inp[i].toLowerCase().replace("_", " ") + "' "
+          " LOWER(source) = '" + strip_special_characters(inp[i]).toLowerCase().replace("_", " ") + "' "
         );
       }
-      filter = filter.concat(" (" + req.join(" OR ") + ") ");
+      if(req.length != 0) {
+        filter = filter.concat(" (" + req.join(" OR ") + ") ");
+      } else {
+		filter = filter.concat(" FALSE ");
+	  }
     }
     if (filter.length == 0) {
       return "";
@@ -114,7 +106,7 @@ let anime_list_request = async (req, res) => {
     return filter;
   };
 
-  req.body["page"] = Math.max(parseInt(req.body["page"]), 0);
+  req.body["page"] = Math.max(parseInt(req.body["page"]), 1) - 1;
   let acceptedSortFields = {
     title: "title_eng",
     rating: "score",
@@ -125,27 +117,27 @@ let anime_list_request = async (req, res) => {
   };
 
   let query = `
-		SELECT
-			id, {fields}
-		FROM anime
-		{search_conditions}
-		ORDER BY {sort_field} {sort_order}
-		LIMIT {start_from}, 50
-	`;
+        SELECT
+            id, {fields}
+        FROM anime
+        {search_conditions}
+        ORDER BY {sort_field} {sort_order}
+        LIMIT {start_from}, 50
+    `;
   console.log(req.body);
   query = utils.format_query(query, {
     fields: "title_eng, title_native, score, type, img",
     sort_field: acceptedSortFields[req.body["sort_field"]],
     sort_order: acceptedSortOrder[req.body["sort_order"]],
     start_from: req.body["page"] * 50,
-    search_conditions: build_search_filters(req.body["search"]),
+    search_conditions: build_search_filters(req.body),
   });
   console.log(query);
 
   comment = "Filter and sort anime list";
-  const queryRes = await pool.query(query);
   try {
-    res.render("anime_list.html", {
+      const queryRes = await pool.query(query);
+    res.render("anime_list_query.html", {
       animeList: queryRes,
       defaults: req.body,
       search_params: JSON.stringify(req.body["search"]),
@@ -154,16 +146,12 @@ let anime_list_request = async (req, res) => {
     console.log(err);
     res.status(500).send("database failed").end();
   }
-};
-app.post("/anime_list", anime_list_request);
-app.get("/anime_list", async (req, res) => {
-  // Default values
-  req.body["sort_field"] = "rating";
-  req.body["sort_order"] = "descending";
-  req.body["page"] = 0;
-  req.body["search"] = "{}";
-  await anime_list_request(req, res);
 });
+
+app.get("/anime_list", async (req, res) => {
+    res.render("anime_list.html");
+});
+
 // add rating for anime
 app.post("/anime/:id/vote", async (req, res) => {
   let anime_id = parseInt(req.params.id);
@@ -197,41 +185,41 @@ app.post("/anime/:id/vote", async (req, res) => {
 let anime_page_request = async (req, res) => {
   let anime_id = parseInt(req.params.id);
   let anime_info_query = `
-		SELECT
-			{fields}
-		FROM anime
-		WHERE id = {anime_id}
-	`;
+        SELECT
+            {fields}
+        FROM anime
+        WHERE id = {anime_id}
+    `;
   anime_info_query = utils.format_query(anime_info_query, {
     fields: "title_eng, title_native, score, type, img",
     anime_id: anime_id,
   });
 
   let character_list_query = `
-		WITH waifu_info AS (
-		    SELECT *
-			FROM anime_to_waifu_mapping
-			INNER JOIN waifu		
-		    ON anime_to_waifu_mapping.waifu_id = waifu.id
-			WHERE anime_id = {anime_id}
-		) 
-		SELECT 
-			{fields}
-		FROM (
-		    SELECT *, 1 AS filter
-		    FROM waifu_info
-		    WHERE role = "main"
-		    UNION ALL
-		    SELECT *, 2 AS filter
-		    FROM waifu_info
-		    WHERE role = "supporting"
-		    UNION ALL
-		    SELECT *, 3 AS filter
-		    FROM waifu_info
-		    WHERE role = "minor"
-		 	) tmp
-		ORDER BY filter, {sort_order}
-	`;
+        WITH waifu_info AS (
+            SELECT *
+            FROM anime_to_waifu_mapping
+            INNER JOIN waifu        
+            ON anime_to_waifu_mapping.waifu_id = waifu.id
+            WHERE anime_id = {anime_id}
+        ) 
+        SELECT 
+            {fields}
+        FROM (
+            SELECT *, 1 AS filter
+            FROM waifu_info
+            WHERE role = "main"
+            UNION ALL
+            SELECT *, 2 AS filter
+            FROM waifu_info
+            WHERE role = "supporting"
+            UNION ALL
+            SELECT *, 3 AS filter
+            FROM waifu_info
+            WHERE role = "minor"
+             ) tmp
+        ORDER BY filter, {sort_order}
+    `;
 
   character_list_query = utils.format_query(character_list_query, {
     anime_id: anime_id,
@@ -241,13 +229,13 @@ let anime_page_request = async (req, res) => {
   });
 
   let anime_tags_query = `
-  		SELECT name FROM anime_tag 
-		INNER JOIN (
-			SELECT tag_id 
-		    FROM anime_tag_mapping
-		    WHERE anime_id = {anime_id}
-		) temp
-		ON anime_tag.id = temp.tag_id
+          SELECT name FROM anime_tag 
+        INNER JOIN (
+            SELECT tag_id 
+            FROM anime_tag_mapping
+            WHERE anime_id = {anime_id}
+        ) temp
+        ON anime_tag.id = temp.tag_id
   `;
 
   anime_tags_query = utils.format_query(anime_tags_query, {
@@ -277,17 +265,17 @@ app.get("/anime/:id", anime_page_request);
 let waifu_page_request = async (req, res) => {
   let waifu_id = parseInt(req.params.id);
   let waifu_info_query = `
-		SELECT
-			{fields}
-		FROM waifu
-		WHERE id = {waifu_id}
-	`;
+        SELECT
+            {fields}
+        FROM waifu
+        WHERE id = {waifu_id}
+    `;
   let waifu_tags_query = `
-	SELECT waifu_tag.id, waifu_tag.name, waifu_tag_mapping.votes
-	FROM waifu_tag
-	INNER JOIN waifu_tag_mapping
-	ON waifu_tag_mapping.waifu_id = {waifu_id} AND waifu_tag.id = waifu_tag_mapping.tag_id
-	`;
+    SELECT waifu_tag.id, waifu_tag.name, waifu_tag_mapping.votes
+    FROM waifu_tag
+    INNER JOIN waifu_tag_mapping
+    ON waifu_tag_mapping.waifu_id = {waifu_id} AND waifu_tag.id = waifu_tag_mapping.tag_id
+    `;
 
   waifu_info_query = utils.format_query(waifu_info_query, {
     fields: "name_eng, name_native, gender, hair_color, likes, dislikes, img",
@@ -317,25 +305,25 @@ let waifu_page_request = async (req, res) => {
 app.get("/waifu/:id", waifu_page_request);
 
 app.get("/allWaifuTags", async(req, res) => {
-	comment = "List all waifu tags";
-	const queryRes = await pool.query("SELECT name FROM waifu_tag");
-	const result = [];
-	queryRes.forEach(e => {
-		result.push(e.name);
-	});
+    comment = "List all waifu tags";
+    const queryRes = await pool.query("SELECT name FROM waifu_tag");
+    const result = [];
+    queryRes.forEach(e => {
+        result.push(e.name);
+    });
 
-	res.end(JSON.stringify(result));
+    res.end(JSON.stringify(result));
 });
 
 app.get("/allAnimeTags", async(req, res) => {
-	comment = "List all anime tags";
-	const queryRes = await pool.query("SELECT name FROM anime_tag");
-	const result = [];
-	queryRes.forEach(e => {
-		result.push(e.name);
-	});
+    comment = "List all anime tags";
+    const queryRes = await pool.query("SELECT name FROM anime_tag");
+    const result = [];
+    queryRes.forEach(e => {
+        result.push(e.name);
+    });
 
-	res.end(JSON.stringify(result));
+    res.end(JSON.stringify(result));
 });
 
 //Add anime_tag
@@ -479,6 +467,12 @@ app.post("/waifu/:id/waifu_tag_unvote", async (req, res) => {
     console.log(err);
   }
   res.redirect(req.originalUrl.slice(0, -16));
+});
+
+app.use(function (err, req, res, next) {
+  console.error(err);
+  console.error(err.stack);
+  res.status(500).send('Internal Server Error Occurred')
 });
 
 (async () => {
