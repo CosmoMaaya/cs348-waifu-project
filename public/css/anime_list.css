@@ -2,10 +2,6 @@ body {
 	overflow: scroll;
 }
 
-.content {
-	margin-top: 80px;
-}
-
 .dsc_td {
     height: 10em;
     padding: 1em;
@@ -45,3 +41,4 @@ body {
 #hidden_param_passer {
     display: none;
 }
+

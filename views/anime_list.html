@@ -5,70 +5,82 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.11.0/jquery.typeahead.min.css">
-
+	<link rel="stylesheet" href="/css/common.css">
 </head>
 <body>
 	{% include "navbar.html" %}
 	<div class="container content">
 		<form id="searchForm">
-			<input class="form-control" type="text" name="title" id="search_title" placeholder="Title">
-			<table>
-				<tr>
-					<td><label>Min Score:</label></td>
-					<td>
-						<input type="number" name="min_score" id="search_score" min="0" max="10">
-					</td>
-				</tr>
-				<!--             <tr>
-				<td><label>Min Votes:</label></td>
-				<td>
-				<input type="number" id="search_votes" min="0" step="1">
-				</td>
-				</tr> -->
-				<tr>
-					<td><label>Type:</label></td>
-					<td>
-						<div class="checkout_select">
-							<input type="checkbox" id="type-special" name="type-special">
-							<label for="type-special">Special</label>
-							<input type="checkbox" id="type-tv" name="type-tv">
-							<label for="type-tv">TV</label>
-							<input type="checkbox" id="type-movie" name="type-movie">
-							<label for="type-movie">Movie</label>
-							<div>
-					</td>
-				</tr>
-				<tr>
-					<td><label>Adapted From:</label></td>
-					<td>
-						<div class="checkout_select">
-							<input type="checkbox" id="adapt-original" name="adapt-original">
-							<label for="adapt-original">Original</label>
-							<input type="checkbox" id="adapt-light-novel" name="adapt-light-novel">
-							<label for="adapt-light-novel">Light Novel</label>
-							<input type="checkbox" id="adapt-manga" name="adapt-manga">
-							<label for="adapt-manga">Manga</label>
-							<div>
-					</td>
-				</tr>
-			</table>
-			<br>
+			<div class="form-group">
+				<label for="search_title">Title</label>
+				<input class="form-control" type="text" name="title" id="search_title" placeholder="Title">
+			</div>
 
-			<label>Sort By:</label>
-			<select id="inp_sort_field" name="sort_field">
-				<option value="title">Title</option>
-				<option value="rating" selected>Rating</option>
-			</select>
-			<select id="inp_sort_order" name="sort_order">
-				<option value="descending" selected>Descending</option>
-				<option value="ascending">Ascending</option>
-			</select>
-			<br>
-			<label>Page:</label>
-			<input id="btn_prev_page" type="button" value="<">
-			<input id="page" type="number" value="1" name="page">
-			<input id="btn_next_page" type="button" value=">">
+			<div class="form-row justify-content-md-left">
+				<div class="form-group col-md-2">
+					<label for="search_score">Min Score</label>
+					<input class="form-control" type="number" name="min_score" id="search_score" min="0" max="10">
+				</div>
+				<div class="form-group col-md-auto">
+					<label>Type</label><br>
+					<div class="btn-group btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-secondary">
+							<input type="checkbox" id="type-special" name="type-special">Special
+						</label>
+						<label class="btn btn-secondary">
+							<input type="checkbox" id="type-tv" name="type-tv">TV
+						</label>
+						<label class="btn btn-secondary">
+							<input type="checkbox" id="type-movie" name="type-movie">Movie
+						</label>
+					</div>
+				</div>
+				<div class="form-group col-md-auto">
+					<label>Adapted From</label><br>
+					<div class="btn-group btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-secondary">
+							<input type="checkbox" id="adapt-original" name="adapt-original">Original
+						</label>
+						<label class="btn btn-secondary">
+							<input type="checkbox" id="adapt-light-novel" name="adapt-light-novel">Light Novel
+						</label>
+						<label class="btn btn-secondary">
+							<input type="checkbox" id="adapt-manga" name="adapt-manga">Manga
+						</label>
+					</div>
+				</div>
+			</div>
 
+			<div class="form-row justify-content-md-left">
+				<div class="form-group col-md-4">
+					<label for="search_score">Sort by</label>
+					<div class="input-group">
+						<select class="form-control custom-select" id="inp_sort_field" name="sort_field">
+							<option value="title">Title</option>
+							<option value="rating" selected>Rating</option>
+						</select>
+						<select class="form-control custom-select" id="inp_sort_order" name="sort_order">
+							<option value="descending" selected>Descending</option>
+							<option value="ascending">Ascending</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-row justify-content-md-left">
+				<div class="form-group col-md-4">
+					<label for="search_score">Page</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<button class="btn btn-secondary" id="btn_prev_page">&lt;</button>
+						</div>
+						<input class="form-control" id="page" type="number" value="1" name="page">
+						<div class="input-group-append">
+							<button class="btn btn-secondary" id="btn_next_page">&gt;</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</form>
 
 		<table id="main_list">

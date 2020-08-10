@@ -9,7 +9,16 @@ $(document).ready(function () {
 			elems[data.name].value = data.value;
 		});
 	}
-	function obtainNewData() {
+	function obtainNewData(e) {
+		$(":checkbox").each((ind, check) => {
+			if(check.checked) {
+				check.parentElement.classList.remove("btn-secondary");
+				check.parentElement.classList.add("btn-primary");
+			} else {
+				check.parentElement.classList.add("btn-secondary");
+				check.parentElement.classList.remove("btn-primary");
+			}
+		});
 		var rawFormData = form.serializeArray();
 		window.localStorage["filterData"] = JSON.stringify(rawFormData);
 		var processed = {};
@@ -39,6 +48,9 @@ $(document).ready(function () {
 				$("#main_list").html(result);
 			}
 		});
+		if(e) {
+			e.preventDefault();
+		}
 	}
 	form.on("input", obtainNewData);
 	form.on("submit", obtainNewData);
@@ -46,12 +58,14 @@ $(document).ready(function () {
 
 	var pageDom = $("#page");
 
-	$("#btn_prev_page").on("click", function() {
+	$("#btn_prev_page").on("click", function(e) {
+		e.preventDefault();
 		pageDom.val(Math.max(1, pageDom.val() - 1));
 		obtainNewData();
 	});
 
-	$("#btn_next_page").on("click", function() {
+	$("#btn_next_page").on("click", function(e) {
+		e.preventDefault();
 		pageDom.val(parseInt(pageDom.val()) + 1);
 		obtainNewData();
 	});
