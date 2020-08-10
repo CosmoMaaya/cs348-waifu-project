@@ -24,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 nunjucks.configure("views", {
   autoescape: true,
   express: app,
+  noCache: true
 });
 
 let pool;
