@@ -52,8 +52,12 @@
 	{% include "navbar.html" %}
     <div class="container content">
 		<div class="row">
-			<img class="col-md" id="anime_img" src={{animeInfo.img}}></img>
-			<div class="col-md-9" id="main_info_container">
+			<div class="col-md">
+				<div class="crop">
+					<img class="waifu-img" src={{animeInfo.img}}></img>
+				</div>
+			</div>
+			<div class="col-md-8" id="main_info_container">
 				<p class="title_eng">{{animeInfo.title_eng}}</p>
 				<p class="dsc_sub dsc_title_native">{{animeInfo.title_native}}</p>
 				<p class="dsc_sub dsc_score">{{animeInfo.score}} / 10</p>
