@@ -4,7 +4,6 @@ $(document).ready(function () {
 	var form = $("#searchForm");
 	if(window.localStorage["filterData_waifu"]) {
 		var rawFormData = JSON.parse(window.localStorage["filterData_waifu"]);
-		console.log(rawFormData);
 		var elems = document.getElementById("searchForm").elements;
 		rawFormData.forEach(data => {
 			elems[data.name].value = data.value;
@@ -46,7 +45,6 @@ $(document).ready(function () {
 			data: JSON.stringify(processed),
 			contentType: "application/json",
 			success: function(result) {
-				console.log(result);
 				$("#main_list").html(result);
 			}
 		});

@@ -104,7 +104,7 @@ app.post("/anime_list_query", async (req, res) => {
         let title_req = strip_special_characters(requirements["title"])
           .toLowerCase()
           .replace(" ", "%");
-        filter = filter.concat("LOWER(title_eng) LIKE '%" + title_req + "%' OR LOWER(title_alt) LIKE '%" + title_req + "%'");
+        filter = filter.concat("(LOWER(title_eng) LIKE '%" + title_req + "%' OR LOWER(title_alt) LIKE '%" + title_req + "%')");
       }
 
     }
@@ -235,7 +235,7 @@ app.post("/waifu_list_query", async (req, res) => {
         let name_req = strip_special_characters(requirements["name"])
           .toLowerCase()
           .replace(" ", "%");
-        filter = filter.concat("LOWER(name_eng) LIKE '%" + name_req + "%' OR LOWER(name_alt) LIKE '%" + name_req + "%' ");
+        filter = filter.concat("(LOWER(name_eng) LIKE '%" + name_req + "%' OR LOWER(name_alt) LIKE '%" + name_req + "%')");
       }
       
     }

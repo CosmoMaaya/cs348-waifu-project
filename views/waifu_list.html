@@ -49,12 +49,12 @@
 					</div>
 				</div>
 				<div class="form-group col-md-4">
-					<label for="search_score">Blacklist Tags</label>
-					<input class="form-control" type="text" name="tags_blacklist" id="tags_blacklist">
+					<label for="search_score">Search Tags</label>
+					<input class="form-control" type="text" name="tags_whitelist" id="tags_whitelist">
 				</div>
 				<div class="form-group col-md-4">
-					<label for="search_score">Whitelist Tags</label>
-					<input class="form-control" type="text" name="tags_whitelist" id="tags_whitelist">
+					<label for="search_score">Blacklist Tags</label>
+					<input class="form-control" type="text" name="tags_blacklist" id="tags_blacklist">
 				</div>
 			</div>
 
@@ -78,9 +78,9 @@
 		</table>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="/js/typeahead.bundle.min.js"></script>
+	<script src="/js/tagsinput.js"></script>
+	<script src="/js/tags.js"></script>
 	<script src="/js/waifu_list.js"></script>
-	<script type="text/javascript"> 
-	   var search_params = "{{search_params}}"
-	</script>
 </body>
 </html>
