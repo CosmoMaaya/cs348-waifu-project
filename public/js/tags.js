@@ -1,6 +1,6 @@
 "use strict";
 
-function setupTags(dom, addr) {
+function getTags(addr, done) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(xhttp.readyState == 4 && xhttp.status == 200) {
@@ -9,11 +9,7 @@ function setupTags(dom, addr) {
 				queryTokenizer: Bloodhound.tokenizers.whitespace,
 				local: JSON.parse(xhttp.responseText)
 			});
-			dom.typeahead({
-				hint: true,
-				highlight: true,
-				minLength: 0
-			}, {
+			done({
 				name: 'tags',
 				source: source 
 			});
@@ -21,4 +17,14 @@ function setupTags(dom, addr) {
 	};
 	xhttp.open("GET", addr, true);
 	xhttp.send();
+}
+
+function setupTags(dom, addr) {
+	getTags(addr, (config) => {
+		dom.typeahead({
+			hint: true,
+			highlight: true,
+			minLength: 0
+		}, config);
+	});
 }

@@ -70,5 +70,14 @@ $(document).ready(function () {
 		pageDom.val(parseInt(pageDom.val()) + 1);
 		obtainNewData();
 	});
+
+	getTags("/allAnimeTags", (config) => {
+//		$("#tags_whitelist").tagsinput({
+//			typeaheadjs: config
+//		});
+//		$("#tags_blacklist").tagsinput({
+//			typeaheadjs: config
+//		});
+	});
 });
 

@@ -52,7 +52,7 @@
 	{% include "navbar.html" %}
     <div class="container content">
 		<div class="row">
-			<img class="col-md-3" id="anime_img" src={{animeInfo.img}}></img>
+			<img class="col-md" id="anime_img" src={{animeInfo.img}}></img>
 			<div class="col-md-9" id="main_info_container">
 				<p class="title_eng">{{animeInfo.title_eng}}</p>
 				<p class="dsc_sub dsc_title_native">{{animeInfo.title_native}}</p>
@@ -63,7 +63,7 @@
 				<br><br>
 				<p class="section_title">Tags:</p><!--
 				{%for t in animeTagInfo %}
-				--><span class="tag"> {{t.name}} </span><!--
+				--><span class="tag">{{t.name}}</span><!--
 				{% endfor %}
 				--><button class="tag tag-new oi" data-glyph="plus" data-toggle="modal" data-target="#submitTag"></button>
 			</div>
