@@ -42,7 +42,7 @@ $(document).ready(function () {
 		});
 		$.ajax({
 			type: "POST",
-			url: "/anime_list_query",
+			url: "/waifu_list_query",
 			data: JSON.stringify(processed),
 			contentType: "application/json",
 			success: function(result) {

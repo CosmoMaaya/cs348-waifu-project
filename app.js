@@ -152,6 +152,113 @@ app.get("/anime_list", async (req, res) => {
     res.render("anime_list.html");
 });
 
+
+/////////////////////////
+////// waifu list ///////
+/////////////////////////
+
+app.post("/waifu_list_query", async (req, res) => {
+  let build_search_filters = (requirements) => {
+    console.log(requirements);
+    let filter = [];
+    if (requirements["name"]) {
+      let name_req = strip_special_characters(requirements["name"])
+        .toLowerCase()
+        .replace(" ", "%");
+      filter = filter.concat("LOWER(name_eng) LIKE '%" + name_req + "%'");
+    }
+    // if (requirements["min_score"]) {
+    //   let min_score = parseFloat(requirements["min_score"]);
+    //   filter = filter.concat(" score >= " + min_score);
+    // }
+    // // if (requirements.hasOwnProperty('min_votes') && requirements["min_votes"] != null && requirements["min_votes"] != ""){
+    // //     let min_votes = parseInt(requirements["min_votes"])
+    // //     filter = filter.concat(
+    // //         " votes_mal >= " + min_votes
+    // //     )
+    // // }
+    // if (requirements["type"]) {
+    //   let inp = requirements["type"];
+    //   let req = [];
+    //   for (let i in inp) {
+    //     req = req.concat(" LOWER(type) = '" + strip_special_characters(inp[i]).toLowerCase() + "' ");
+    //   }
+    //   if(req.length != 0) {
+    //     filter = filter.concat(" (" + req.join(" OR ") + ") ");
+    //   } else {
+    // filter = filter.concat(" FALSE ");
+    // }
+    // }
+    // if (requirements["adapt"]) {
+    //   let inp = requirements["adapt"];
+    //   let req = [];
+    //   for (let i in inp) {
+    //     req = req.concat(
+    //       " LOWER(source) = '" + strip_special_characters(inp[i]).toLowerCase().replace("_", " ") + "' "
+    //     );
+    //   }
+    //   if(req.length != 0) {
+    //     filter = filter.concat(" (" + req.join(" OR ") + ") ");
+    //   } else {
+    // filter = filter.concat(" FALSE ");
+    // }
+    // }
+    // if (filter.length == 0) {
+    //   return "";
+    // }
+    // filter = " WHERE " + filter.join(" AND ");
+    // return filter;
+  };
+
+  // req.body["page"] = Math.max(parseInt(req.body["page"]), 1) - 1;
+  // let acceptedSortFields = {
+  //   title: "title_eng",
+  //   rating: "score",
+  // };
+  // let acceptedSortOrder = {
+  //   ascending: "ASC",
+  //   descending: "DESC",
+  // };
+
+  let query = `
+        SELECT
+            id, {fields}
+        FROM waifu
+        {search_conditions}
+
+        LIMIT {start_from}, 50
+    `;
+
+    //        ORDER BY {sort_field} {sort_order}
+  console.log(req.body);
+  query = utils.format_query(query, {
+    fields: "title_eng, title_native, score, type, img",
+    //sort_field: acceptedSortFields[req.body["sort_field"]],
+    //sort_order: acceptedSortOrder[req.body["sort_order"]],
+    start_from: req.body["page"] * 50,
+    search_conditions: build_search_filters(req.body),
+  });
+  console.log(query);
+
+  comment = "Filter and sort waifu list";
+  try {
+      const queryRes = await pool.query(query);
+    res.render("waifu_list_query.html", {
+      waifuList: queryRes,
+      defaults: req.body,
+      search_params: JSON.stringify(req.body["search"]),
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("database failed").end();
+  }
+  
+});
+
+app.get("/waifu_list", async (req, res) => {
+    res.render("waifu_list.html");
+});
+
 // add rating for anime
 app.post("/anime/:id/vote", async (req, res) => {
   let anime_id = parseInt(req.params.id);
