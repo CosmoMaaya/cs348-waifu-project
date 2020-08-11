@@ -33,6 +33,11 @@
     margin-right: 5px;
     margin-bottom: 5px;
 	vertical-align: top;
+	cursor: pointer;
+}
+
+.tag:hover {
+    background-color: #a4d4fd;
 }
 
 .tag-new {

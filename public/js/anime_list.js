@@ -70,18 +70,23 @@ $(document).ready(function () {
 		obtainNewData();
 	});
 
+	var whitelist = $("#tags_whitelist");
+	var blacklist = $("#tags_blacklist");
+
 	getTags("/allAnimeTags", (config) => {
-		var whitelist = $("#tags_whitelist");
 		setupTagsOnly(whitelist, config);
 		whitelist.bind('typeahead:select', function(ev, suggestion) {
 			obtainNewData();
 		});
 
-		var blacklist = $("#tags_blacklist");
 		setupTagsOnly(blacklist, config);
 		blacklist.bind('typeahead:select', function(ev, suggestion) {
 			obtainNewData();
 		});
 	});
+
+	if(location.hash.length > 1) {
+		whitelist.val(decodeURIComponent(location.hash.substr(1)));
+	}
 });
 

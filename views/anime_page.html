@@ -63,7 +63,7 @@
 				<br><br>
 				<p class="section_title">Tags:</p><!--
 				{%for t in animeTagInfo %}
-				--><span class="tag">{{t.name}}</span><!--
+				--><span class="tag tag-click" data-tag="{{t.name}}">{{t.name}}</span><!--
 				{% endfor %}
 				--><button class="tag tag-new oi" data-glyph="plus" data-toggle="modal" data-target="#submitTag"></button>
 			</div>

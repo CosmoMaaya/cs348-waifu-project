@@ -54,7 +54,7 @@
 
 				<p class="section_title">Tags</p><!--
 				{%for t in waifuTags %}
-				--><span class="tag">{{t.name}} ({{t.votes}}) 
+				--><span class="tag tag-click" data-tag="{{t.name}}">{{t.name}} ({{t.votes}}) 
 					<form action="{{waifuIDLink}}/waifu_tag_vote" method="POST">
 						<button class="oi thumb-btn" data-glyph="thumb-up"></button>
 						<input type="hidden" name="tagID" value={{t.id}}>
