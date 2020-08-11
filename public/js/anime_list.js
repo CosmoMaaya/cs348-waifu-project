@@ -6,7 +6,6 @@ $(document).ready(function () {
 		var rawFormData = JSON.parse(window.localStorage["filterData_anime"]);
 		var elems = document.getElementById("searchForm").elements;
 		rawFormData.forEach(data => {
-			console.log(data);
 			elems[data.name].value = data.value;
 		});
 	}
@@ -72,12 +71,17 @@ $(document).ready(function () {
 	});
 
 	getTags("/allAnimeTags", (config) => {
-//		$("#tags_whitelist").tagsinput({
-//			typeaheadjs: config
-//		});
-//		$("#tags_blacklist").tagsinput({
-//			typeaheadjs: config
-//		});
+		var whitelist = $("#tags_whitelist");
+		setupTagsOnly(whitelist, config);
+		whitelist.bind('typeahead:select', function(ev, suggestion) {
+			obtainNewData();
+		});
+
+		var blacklist = $("#tags_blacklist");
+		setupTagsOnly(blacklist, config);
+		blacklist.bind('typeahead:select', function(ev, suggestion) {
+			obtainNewData();
+		});
 	});
 });
 

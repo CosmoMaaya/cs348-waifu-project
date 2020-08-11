@@ -71,5 +71,20 @@ $(document).ready(function () {
 		pageDom.val(parseInt(pageDom.val()) + 1);
 		obtainNewData();
 	});
+
+	getTags("/allWaifuTags", (config) => {
+		var whitelist = $("#tags_whitelist");
+		setupTagsOnly(whitelist, config);
+		whitelist.bind('typeahead:select', function(ev, suggestion) {
+			obtainNewData();
+		});
+
+		var blacklist = $("#tags_blacklist");
+		setupTagsOnly(blacklist, config);
+		blacklist.bind('typeahead:select', function(ev, suggestion) {
+			obtainNewData();
+		});
+	});
+
 });
 

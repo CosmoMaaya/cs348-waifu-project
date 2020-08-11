@@ -21,10 +21,14 @@ function getTags(addr, done) {
 
 function setupTags(dom, addr) {
 	getTags(addr, (config) => {
-		dom.typeahead({
-			hint: true,
-			highlight: true,
-			minLength: 0
-		}, config);
+		setupTagsOnly(dom, config);
 	});
+}
+
+function setupTagsOnly(dom, config) {
+	dom.typeahead({
+		hint: true,
+		highlight: true,
+		minLength: 0
+	}, config);
 }
