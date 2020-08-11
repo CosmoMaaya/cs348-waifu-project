@@ -1,7 +1,7 @@
 "use strict";
 
 $(document).ready(function () {
-	var form = $("#searchForm");
+	var form = $("#searchForm_anime");
 	if(window.localStorage["filterData_anime"]) {
 		var rawFormData = JSON.parse(window.localStorage["filterData_anime"]);
 		var elems = document.getElementById("searchForm").elements;
@@ -21,7 +21,7 @@ $(document).ready(function () {
 			}
 		});
 		var rawFormData = form.serializeArray();
-		window.localStorage["filterData"] = JSON.stringify(rawFormData);
+		window.localStorage["filterData_anime"] = JSON.stringify(rawFormData);
 		var processed = {};
 		rawFormData.forEach(data => {
 			var name = data.name;
@@ -57,7 +57,7 @@ $(document).ready(function () {
 	form.on("submit", obtainNewData);
 	obtainNewData();
 
-	var pageDom = $("#page");
+	var pageDom = $("#page_anime");
 
 	$("#btn_prev_page").on("click", function(e) {
 		e.preventDefault();

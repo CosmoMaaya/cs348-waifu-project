@@ -7,7 +7,6 @@ $(document).ready(function () {
 		console.log(rawFormData);
 		var elems = document.getElementById("searchForm").elements;
 		rawFormData.forEach(data => {
-			console.log(data);
 			elems[data.name].value = data.value;
 		});
 	}
@@ -22,7 +21,7 @@ $(document).ready(function () {
 			}
 		});
 		var rawFormData = form.serializeArray();
-		window.localStorage["filterData"] = JSON.stringify(rawFormData);
+		window.localStorage["filterData_waifu"] = JSON.stringify(rawFormData);
 		var processed = {};
 		rawFormData.forEach(data => {
 			var name = data.name;
@@ -58,7 +57,7 @@ $(document).ready(function () {
 	form.on("submit", obtainNewData);
 	obtainNewData();
 
-	var pageDom = $("#page");
+	var pageDom = $("#page_waifu");
 
 	$("#btn_prev_page").on("click", function(e) {
 		e.preventDefault();
