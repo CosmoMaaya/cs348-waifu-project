@@ -2,8 +2,8 @@
 
 $(document).ready(function () {
 	var form = $("#searchForm");
-	if(window.localStorage["filterData"]) {
-		var rawFormData = JSON.parse(window.localStorage["filterData"]);
+	if(window.localStorage["filterData_anime"]) {
+		var rawFormData = JSON.parse(window.localStorage["filterData_anime"]);
 		var elems = document.getElementById("searchForm").elements;
 		rawFormData.forEach(data => {
 			console.log(data);

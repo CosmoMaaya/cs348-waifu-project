@@ -1,9 +1,10 @@
 "use strict";
 
 $(document).ready(function () {
-	var form = $("#searchForm");
-	if(window.localStorage["filterData"]) {
-		var rawFormData = JSON.parse(window.localStorage["filterData"]);
+	var form = $("#searchForm_waifu");
+	if(window.localStorage["filterData_waifu"]) {
+		var rawFormData = JSON.parse(window.localStorage["filterData_waifu"]);
+		console.log(rawFormData);
 		var elems = document.getElementById("searchForm").elements;
 		rawFormData.forEach(data => {
 			console.log(data);
