@@ -57,6 +57,16 @@ app.post("/anime_list_query", async (req, res) => {
   let build_search_filters = (requirements) => {
     console.log(requirements);
     let filter = [];
+    if (requirements["tags_blacklist"]){
+      let blacklist = requirements["tags_blacklist"].split(",").map(x=>x.trim());
+      filter = filter.concat("id NOT IN (select anime_id FROM anime_tag_mapping WHERE tag_id IN (SELECT id FROM anime_tag WHERE name IN ("
+      + blacklist.map(x=>"\""+x+"\"").join(",")+")))")
+    }
+    if (requirements["tags_whitelist"]){
+      let whitelist = requirements["tags_whitelist"].split(",").map(x=>x.trim());
+      filter = filter.concat("id IN (select anime_id FROM anime_tag_mapping WHERE tag_id IN (SELECT id FROM anime_tag WHERE name IN ("
+      + whitelist.map(x=>"\""+x+"\"").join(",")+")))")
+    }
     if (requirements["title"]) {
       let title_req = strip_special_characters(requirements["title"])
         .toLowerCase()
