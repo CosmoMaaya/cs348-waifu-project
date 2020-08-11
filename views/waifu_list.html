@@ -13,10 +13,10 @@
 		<form id="searchForm">
 			<div class="form-group">
 				<label for="search_name">Name</label>
-				<input class="form-control" type="text" name="waifu_name" id="search_name" placeholder="Name">
+				<input class="form-control" type="text" name="name" id="search_name" placeholder="Name">
 			</div>
 
-			<div class="form-row justify-content-md-left">
+<!-- 			<div class="form-row justify-content-md-left">
 				<div class="form-group col-md-2">
 					<label for="search_score">Min Score</label>
 					<input class="form-control" type="number" name="min_score" id="search_score" min="0" max="10">
@@ -25,31 +25,14 @@
 					<label>Type</label><br>
 					<div class="btn-group btn-group-toggle" data-toggle="buttons">
 						<label class="btn btn-secondary">
-							<input type="checkbox" id="type-special" name="type-special">Special
+							<input type="checkbox" id="gender-male" name="gender-male">Male
 						</label>
 						<label class="btn btn-secondary">
-							<input type="checkbox" id="type-tv" name="type-tv">TV
-						</label>
-						<label class="btn btn-secondary">
-							<input type="checkbox" id="type-movie" name="type-movie">Movie
+							<input type="checkbox" id="gender-female" name="gender-female">Female
 						</label>
 					</div>
 				</div>
-				<div class="form-group col-md-auto">
-					<label>Adapted From</label><br>
-					<div class="btn-group btn-group-toggle" data-toggle="buttons">
-						<label class="btn btn-secondary">
-							<input type="checkbox" id="adapt-original" name="adapt-original">Original
-						</label>
-						<label class="btn btn-secondary">
-							<input type="checkbox" id="adapt-light-novel" name="adapt-light-novel">Light Novel
-						</label>
-						<label class="btn btn-secondary">
-							<input type="checkbox" id="adapt-manga" name="adapt-manga">Manga
-						</label>
-					</div>
-				</div>
-			</div>
+			</div> -->
 
 			<div class="form-row justify-content-md-left">
 				<div class="form-group col-md-4">
@@ -57,7 +40,7 @@
 					<div class="input-group">
 						<select class="form-control custom-select" id="inp_sort_field" name="sort_field">
 							<option value="name">Name</option>
-							<option value="rating" selected>Rating</option>
+							<option value="popularity" selected>Popularity</option>
 						</select>
 						<select class="form-control custom-select" id="inp_sort_order" name="sort_order">
 							<option value="descending" selected>Descending</option>

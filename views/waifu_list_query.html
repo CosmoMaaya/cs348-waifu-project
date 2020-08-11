@@ -1,16 +1,16 @@
-{% for waifu in wafuList %}
+{% for waifu in waifuList %}
 <tr>
 	<td class="dsc_td">
 		<img class="dsc_waifu_img" src={{waifu.img}} alt={{waifu.name_eng}}>
 	</td>
 	<td class="dsc_td"><div class="dsc_info">
 			<p class="dsc_name_eng">
-			<!-- <a href="/anime/{{anime.id}}" >{{anime.title_eng}}</a> -->
+			<a href="/waifu/{{waifu.id}}" >{{waifu.name_eng}}</a>
 			</p>
 			<div>
 				<p class="dsc_sub dsc_name_native">{{waifu.name_native}}</p>
-				<!-- <p class="dsc_sub dsc_score">{{anime.score}} / 10</p> -->
-				<!-- <p class="dsc_sub dsc_anime_type">{{anime.type}}</p> -->
+<!-- 				<p class="dsc_sub dsc_score">{{waifu.likes}} / {{waifu.dislikes}}</p>
+				<p class="dsc_sub dsc_waifu_type">{{waifu.gender}}</p> -->
 			</div>
 		</div></td>
 </tr>

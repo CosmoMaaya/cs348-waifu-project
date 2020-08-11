@@ -183,74 +183,51 @@ app.post("/waifu_list_query", async (req, res) => {
         .replace(" ", "%");
       filter = filter.concat("LOWER(name_eng) LIKE '%" + name_req + "%'");
     }
-    // if (requirements["min_score"]) {
-    //   let min_score = parseFloat(requirements["min_score"]);
-    //   filter = filter.concat(" score >= " + min_score);
-    // }
-    // // if (requirements.hasOwnProperty('min_votes') && requirements["min_votes"] != null && requirements["min_votes"] != ""){
-    // //     let min_votes = parseInt(requirements["min_votes"])
-    // //     filter = filter.concat(
-    // //         " votes_mal >= " + min_votes
-    // //     )
-    // // }
-    // if (requirements["type"]) {
-    //   let inp = requirements["type"];
-    //   let req = [];
-    //   for (let i in inp) {
-    //     req = req.concat(" LOWER(type) = '" + strip_special_characters(inp[i]).toLowerCase() + "' ");
-    //   }
-    //   if(req.length != 0) {
-    //     filter = filter.concat(" (" + req.join(" OR ") + ") ");
-    //   } else {
-    // filter = filter.concat(" FALSE ");
-    // }
-    // }
-    // if (requirements["adapt"]) {
-    //   let inp = requirements["adapt"];
-    //   let req = [];
-    //   for (let i in inp) {
-    //     req = req.concat(
-    //       " LOWER(source) = '" + strip_special_characters(inp[i]).toLowerCase().replace("_", " ") + "' "
-    //     );
-    //   }
-    //   if(req.length != 0) {
-    //     filter = filter.concat(" (" + req.join(" OR ") + ") ");
-    //   } else {
-    // filter = filter.concat(" FALSE ");
-    // }
-    // }
-    // if (filter.length == 0) {
-    //   return "";
-    // }
-    // filter = " WHERE " + filter.join(" AND ");
-    // return filter;
+
+    if (requirements["gender"]) {
+      let inp = requirements["gender"];
+      let req = [];
+      for (let i in inp) {
+        req = req.concat(" LOWER(gender) = '" + strip_special_characters(inp[i]).toLowerCase() + "' ");
+      }
+      if(req.length != 0) {
+        filter = filter.concat(" (" + req.join(" OR ") + ") ");
+      } else {
+    filter = filter.concat(" FALSE ");
+    }
+    }
+
+    if (filter.length == 0) {
+      return "";
+    }
+    filter = " WHERE " + filter.join(" AND ");
+    return filter;
   };
 
-  // req.body["page"] = Math.max(parseInt(req.body["page"]), 1) - 1;
-  // let acceptedSortFields = {
-  //   title: "title_eng",
-  //   rating: "score",
-  // };
-  // let acceptedSortOrder = {
-  //   ascending: "ASC",
-  //   descending: "DESC",
-  // };
+  req.body["page"] = Math.max(parseInt(req.body["page"]), 1) - 1;
+  let acceptedSortFields = {
+    popularity: "( likes + dislikes )",
+    rating: "score",
+  };
+  let acceptedSortOrder = {
+    ascending: "ASC",
+    descending: "DESC",
+  };
 
   let query = `
         SELECT
             id, {fields}
         FROM waifu
         {search_conditions}
-
+        ORDER BY {sort_field} {sort_order}
         LIMIT {start_from}, 50
     `;
 
-    //        ORDER BY {sort_field} {sort_order}
-  console.log(req.body);
+  //console.log(req.body);
   query = utils.format_query(query, {
-    fields: "title_eng, title_native, score, type, img",
-    //sort_field: acceptedSortFields[req.body["sort_field"]],
-    //sort_order: acceptedSortOrder[req.body["sort_order"]],
+    fields: "name_eng, name_native, likes, gender, img",
+    sort_field: acceptedSortFields[req.body["sort_field"]],
+    sort_order: acceptedSortOrder[req.body["sort_order"]],
     start_from: req.body["page"] * 50,
     search_conditions: build_search_filters(req.body),
   });
@@ -259,6 +236,7 @@ app.post("/waifu_list_query", async (req, res) => {
   comment = "Filter and sort waifu list";
   try {
       const queryRes = await pool.query(query);
+      console.log(queryRes);
     res.render("waifu_list_query.html", {
       waifuList: queryRes,
       defaults: req.body,
@@ -268,7 +246,7 @@ app.post("/waifu_list_query", async (req, res) => {
     console.log(err);
     res.status(500).send("database failed").end();
   }
-  
+
 });
 
 app.get("/waifu_list", async (req, res) => {

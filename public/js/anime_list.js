@@ -2,8 +2,8 @@
 
 $(document).ready(function () {
 	var form = $("#searchForm");
-	if(window.localStorage["filterData"]) {
-		var rawFormData = JSON.parse(window.localStorage["filterData"]);
+	if(window.localStorage["filterData_anime"]) {
+		var rawFormData = JSON.parse(window.localStorage["filterData_anime"]);
 		var elems = document.getElementById("searchForm").elements;
 		rawFormData.forEach(data => {
 			console.log(data);
@@ -21,7 +21,7 @@ $(document).ready(function () {
 			}
 		});
 		var rawFormData = form.serializeArray();
-		window.localStorage["filterData"] = JSON.stringify(rawFormData);
+		window.localStorage["filterData_anime"] = JSON.stringify(rawFormData);
 		var processed = {};
 		rawFormData.forEach(data => {
 			var name = data.name;
