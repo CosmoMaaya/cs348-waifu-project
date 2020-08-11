@@ -8,6 +8,7 @@ const bodyParser = require("body-parser"); // parsing form requests
 const nunjucks = require("nunjucks"); // templating engine
 const utils = require("./utils");
 const { strip_special_characters } = require("./utils");
+const { escapeshellarg } = require("./utils");
 
 const config = JSON.parse(
   fs.readFileSync(
@@ -29,6 +30,32 @@ nunjucks.configure("views", {
 });
 
 let pool;
+
+function isJP(ch){
+  //var JP_puncs = ["\u3005", "\u4edd", "\u30fd", "\u30fe", "\u309D", "\u309E", "\u3003"]
+  return (ch >= "\u4e00" && ch <= "\u9faf") || //kanji
+  (ch >= "\u3000" && ch <= "\u4dbf") ||  // also some punctuations and kanji, but more
+  (ch >= "\u3040" && ch <= "\u309f") || //hiragana
+  (ch >= "\u30a0" && ch <= "\u30ff");  //katakana
+}
+
+function hasJP(str){
+  return Array.prototype.some.call(str, isJP);
+}
+
+function accumulativeParser(str, condition) {
+    let accumulator = "";
+
+    for (let i = 0; i < str.length; ++i) {
+        let ch = str[i];
+
+        if (condition(ch)) {
+            accumulator += ch;
+        }
+    }
+
+    return accumulator;
+}
 
 app.get("/", async (req, res) => {
   // try {
@@ -68,10 +95,18 @@ app.post("/anime_list_query", async (req, res) => {
       + whitelist.map(x=>"\""+x+"\"").join(",")+")))")
     }
     if (requirements["title"]) {
-      let title_req = strip_special_characters(requirements["title"])
-        .toLowerCase()
-        .replace(" ", "%");
-      filter = filter.concat("LOWER(title_eng) LIKE '%" + title_req + "%'");
+      if(hasJP(requirements["title"])){
+        console.log(requirements["title"]);
+        let title_req = accumulativeParser(requirements["title"], isJP)
+          .replace(" ", "%");
+        filter = filter.concat("LOWER(title_native) LIKE '%" + title_req + "%'");
+      }else{
+        let title_req = strip_special_characters(requirements["title"])
+          .toLowerCase()
+          .replace(" ", "%");
+        filter = filter.concat("LOWER(title_eng) LIKE '%" + title_req + "%' OR LOWER(title_alt) LIKE '%" + title_req + "%'");
+      }
+
     }
     if (requirements["min_score"]) {
       let min_score = parseFloat(requirements["min_score"]);
@@ -177,11 +212,32 @@ app.post("/waifu_list_query", async (req, res) => {
   let build_search_filters = (requirements) => {
     console.log(requirements);
     let filter = [];
+
+
+    if (requirements["tags_blacklist"]){
+      let blacklist = requirements["tags_blacklist"].split(",").map(x=>x.trim());
+      filter = filter.concat("id NOT IN (select waifu_id FROM waifu_tag_mapping WHERE tag_id IN (SELECT id FROM waifu_tag WHERE name IN ("
+      + blacklist.map(x=>"\""+x+"\"").join(",")+")))")
+    }
+    if (requirements["tags_whitelist"]){
+      let whitelist = requirements["tags_whitelist"].split(",").map(x=>x.trim());
+      filter = filter.concat("id IN (select waifu_id FROM waifu_tag_mapping WHERE tag_id IN (SELECT id FROM waifu_tag WHERE name IN ("
+      + whitelist.map(x=>"\""+x+"\"").join(",")+")))")
+    }
+
     if (requirements["name"]) {
-      let name_req = strip_special_characters(requirements["name"])
-        .toLowerCase()
-        .replace(" ", "%");
-      filter = filter.concat("LOWER(name_eng) LIKE '%" + name_req + "%'");
+      if(hasJP(requirements["name"])){
+        console.log(requirements["name"]);
+        let name_req = accumulativeParser(requirements["name"], isJP)
+          .replace(" ", "%");
+        filter = filter.concat("LOWER(name_native) LIKE '%" + name_req + "%'");
+      }else{
+        let name_req = strip_special_characters(requirements["name"])
+          .toLowerCase()
+          .replace(" ", "%");
+        filter = filter.concat("LOWER(name_eng) LIKE '%" + name_req + "%' OR LOWER(name_alt) LIKE '%" + name_req + "%' ");
+      }
+      
     }
 
     if (requirements["gender"]) {
@@ -236,7 +292,7 @@ app.post("/waifu_list_query", async (req, res) => {
   comment = "Filter and sort waifu list";
   try {
       const queryRes = await pool.query(query);
-      console.log(queryRes);
+      //console.log(queryRes);
     res.render("waifu_list_query.html", {
       waifuList: queryRes,
       defaults: req.body,
