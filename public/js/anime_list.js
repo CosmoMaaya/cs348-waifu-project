@@ -9,6 +9,26 @@ $(document).ready(function () {
 			elems[data.name].value = data.value;
 		});
 	}
+
+	var whitelist = $("#tags_whitelist");
+	var blacklist = $("#tags_blacklist");
+
+	getTags("/allAnimeTags", (config) => {
+		setupTagsOnly(whitelist, config);
+		whitelist.bind('typeahead:select', function(ev, suggestion) {
+			obtainNewData();
+		});
+
+		setupTagsOnly(blacklist, config);
+		blacklist.bind('typeahead:select', function(ev, suggestion) {
+			obtainNewData();
+		});
+	});
+
+	if(location.hash.length > 1) {
+		whitelist.val(decodeURIComponent(location.hash.substr(1)));
+	}
+
 	function obtainNewData(e) {
 		$(":checkbox").each((ind, check) => {
 			if(check.checked) {
@@ -69,24 +89,5 @@ $(document).ready(function () {
 		pageDom.val(parseInt(pageDom.val()) + 1);
 		obtainNewData();
 	});
-
-	var whitelist = $("#tags_whitelist");
-	var blacklist = $("#tags_blacklist");
-
-	getTags("/allAnimeTags", (config) => {
-		setupTagsOnly(whitelist, config);
-		whitelist.bind('typeahead:select', function(ev, suggestion) {
-			obtainNewData();
-		});
-
-		setupTagsOnly(blacklist, config);
-		blacklist.bind('typeahead:select', function(ev, suggestion) {
-			obtainNewData();
-		});
-	});
-
-	if(location.hash.length > 1) {
-		whitelist.val(decodeURIComponent(location.hash.substr(1)));
-	}
 });
 
