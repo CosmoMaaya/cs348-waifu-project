@@ -61,9 +61,47 @@
                         </td>
                     </tr> 
                     <tr>
-                        <th>Likes</th>
-                        <td style="text-align:center;">{{waifuInfo.likes}}</td>
+                        <th>Likes/Dislikes</th>
+                        <td style="text-align:center;">
+                            <div style="display : flex; justify-content: space-between">
+                                <div style="display : flex;">
+                                    <div style="text-align : center; margin-right: 1rem;">
+                                        <a>Likes</a>
+                                    </div>
+                                </div>
+                                <div style="display : flex;">
+                                    <div style="text-align : center;"> 
+                                        <a>{{waifuInfo.likes}}</a>
+                                        
+                                    </div>
+                                    <div style="text-align : center;"> 
+                                        <form  action="{{waifuIDLink}}/waifu_like_vote" method="POST">
+                                            <input type="submit" value="+1">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display : flex; justify-content: space-between">
+                                <div style="display : flex;">
+                                    <div style="text-align : center; margin-right: 1rem;">
+                                        <a>Dislikes</a>
+                                    </div>
+                                </div>
+                                <div style="display : flex;">
+                                    <div style="text-align : center;"> 
+                                        <a>{{waifuInfo.dislikes}}</a>
+                                        
+                                    </div>
+                                    <div style="text-align : center;"> 
+                                        <form  action="{{waifuIDLink}}/waifu_dislike_vote" method="POST">
+                                            <input type="submit" value="+1">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
+
                 </tbody>
             </table>
             <div style="margin: 1rem;">

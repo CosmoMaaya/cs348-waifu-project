@@ -494,6 +494,33 @@ app.post("/waifu/:id/waifu_tag_unvote", async (req, res) => {
   res.redirect(req.originalUrl.slice(0, -16));
 });
 
+app.post("/waifu/:id/waifu_like_vote", async (req, res) => {
+  let waifuID = req.params.id;
+  try {
+    comment = "Like a waifu";
+    await pool.query("UPDATE `waifu` SET `likes` = likes + 1 WHERE `id` = ?", [
+      waifuID,
+    ]);
+  } catch (err) {
+    console.log(err);
+  }
+  res.redirect(req.originalUrl.slice(0, -15));
+});
+
+app.post("/waifu/:id/waifu_dislike_vote", async (req, res) => {
+  let waifuID = req.params.id;
+  try {
+    comment = "Dislike a waifu";
+    await pool.query(
+      "UPDATE `waifu` SET `dislikes` = dislikes + 1 WHERE `id` = ?",
+      [waifuID]
+    );
+  } catch (err) {
+    console.log(err);
+  }
+  res.redirect(req.originalUrl.slice(0, -18));
+});
+
 app.use(function (err, req, res, next) {
   console.error(err);
   console.error(err.stack);
