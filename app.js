@@ -203,11 +203,11 @@ app.post("/waifu_list_query", async (req, res) => {
     // filter = filter.concat(" FALSE ");
     // }
     // }
-    // if (filter.length == 0) {
-    //   return "";
-    // }
-    // filter = " WHERE " + filter.join(" AND ");
-    // return filter;
+    if (filter.length == 0) {
+      return "";
+    }
+    filter = " WHERE " + filter.join(" AND ");
+    return filter;
   };
 
   // req.body["page"] = Math.max(parseInt(req.body["page"]), 1) - 1;
@@ -230,9 +230,9 @@ app.post("/waifu_list_query", async (req, res) => {
     `;
 
     //        ORDER BY {sort_field} {sort_order}
-  console.log(req.body);
+  //console.log(req.body);
   query = utils.format_query(query, {
-    fields: "title_eng, title_native, score, type, img",
+    fields: "name_eng, name_native, likes, gender, img",
     //sort_field: acceptedSortFields[req.body["sort_field"]],
     //sort_order: acceptedSortOrder[req.body["sort_order"]],
     start_from: req.body["page"] * 50,
@@ -243,6 +243,7 @@ app.post("/waifu_list_query", async (req, res) => {
   comment = "Filter and sort waifu list";
   try {
       const queryRes = await pool.query(query);
+      //console.log(queryRes);
     res.render("waifu_list_query.html", {
       waifuList: queryRes,
       defaults: req.body,
@@ -252,7 +253,7 @@ app.post("/waifu_list_query", async (req, res) => {
     console.log(err);
     res.status(500).send("database failed").end();
   }
-  
+
 });
 
 app.get("/waifu_list", async (req, res) => {

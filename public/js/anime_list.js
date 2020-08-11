@@ -1,7 +1,7 @@
 "use strict";
 
 $(document).ready(function () {
-	var form = $("#searchForm_anime");
+	var form = $("#searchForm");
 	if(window.localStorage["filterData_anime"]) {
 		var rawFormData = JSON.parse(window.localStorage["filterData_anime"]);
 		var elems = document.getElementById("searchForm").elements;
@@ -57,7 +57,7 @@ $(document).ready(function () {
 	form.on("submit", obtainNewData);
 	obtainNewData();
 
-	var pageDom = $("#page_anime");
+	var pageDom = $("#page");
 
 	$("#btn_prev_page").on("click", function(e) {
 		e.preventDefault();

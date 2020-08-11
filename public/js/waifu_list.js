@@ -1,7 +1,7 @@
 "use strict";
 
 $(document).ready(function () {
-	var form = $("#searchForm_waifu");
+	var form = $("#searchForm");
 	if(window.localStorage["filterData_waifu"]) {
 		var rawFormData = JSON.parse(window.localStorage["filterData_waifu"]);
 		console.log(rawFormData);
@@ -46,6 +46,7 @@ $(document).ready(function () {
 			data: JSON.stringify(processed),
 			contentType: "application/json",
 			success: function(result) {
+				console.log(result);
 				$("#main_list").html(result);
 			}
 		});
@@ -57,7 +58,7 @@ $(document).ready(function () {
 	form.on("submit", obtainNewData);
 	obtainNewData();
 
-	var pageDom = $("#page_waifu");
+	var pageDom = $("#page");
 
 	$("#btn_prev_page").on("click", function(e) {
 		e.preventDefault();
