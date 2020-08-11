@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 nunjucks.configure("views", {
   autoescape: true,
   express: app,
-  noCache: true
+  noCache: true,
 });
 
 let pool;
@@ -77,27 +77,33 @@ app.post("/anime_list_query", async (req, res) => {
       let inp = requirements["type"];
       let req = [];
       for (let i in inp) {
-        req = req.concat(" LOWER(type) = '" + strip_special_characters(inp[i]).toLowerCase() + "' ");
+        req = req.concat(
+          " LOWER(type) = '" +
+            strip_special_characters(inp[i]).toLowerCase() +
+            "' "
+        );
       }
-      if(req.length != 0) {
+      if (req.length != 0) {
         filter = filter.concat(" (" + req.join(" OR ") + ") ");
       } else {
-		filter = filter.concat(" FALSE ");
-	  }
+        filter = filter.concat(" FALSE ");
+      }
     }
     if (requirements["adapt"]) {
       let inp = requirements["adapt"];
       let req = [];
       for (let i in inp) {
         req = req.concat(
-          " LOWER(source) = '" + strip_special_characters(inp[i]).toLowerCase().replace("_", " ") + "' "
+          " LOWER(source) = '" +
+            strip_special_characters(inp[i]).toLowerCase().replace("_", " ") +
+            "' "
         );
       }
-      if(req.length != 0) {
+      if (req.length != 0) {
         filter = filter.concat(" (" + req.join(" OR ") + ") ");
       } else {
-		filter = filter.concat(" FALSE ");
-	  }
+        filter = filter.concat(" FALSE ");
+      }
     }
     if (filter.length == 0) {
       return "";
@@ -136,7 +142,7 @@ app.post("/anime_list_query", async (req, res) => {
 
   comment = "Filter and sort anime list";
   try {
-      const queryRes = await pool.query(query);
+    const queryRes = await pool.query(query);
     res.render("anime_list_query.html", {
       animeList: queryRes,
       defaults: req.body,
@@ -149,7 +155,7 @@ app.post("/anime_list_query", async (req, res) => {
 });
 
 app.get("/anime_list", async (req, res) => {
-    res.render("anime_list.html");
+  res.render("anime_list.html");
 });
 
 // add rating for anime
@@ -270,6 +276,26 @@ let waifu_page_request = async (req, res) => {
         FROM waifu
         WHERE id = {waifu_id}
     `;
+  waifu_info_query = utils.format_query(waifu_info_query, {
+    fields: "name_eng, name_native, gender, hair_color, likes, dislikes, img",
+    waifu_id: waifu_id,
+  });
+
+  let anime_list_query = `
+    SELECT *
+    FROM anime_to_waifu_mapping
+    INNER JOIN anime        
+    ON anime_to_waifu_mapping.anime_id = anime.id
+    WHERE waifu_id = {waifu_id}
+    ORDER BY {sort_order}
+`;
+
+  anime_list_query = utils.format_query(anime_list_query, {
+    waifu_id: waifu_id,
+    fields: "title_eng, anime_id, role, score, img",
+    sort_order: "score DESC",
+  });
+
   let waifu_tags_query = `
     SELECT waifu_tag.id, waifu_tag.name, waifu_tag_mapping.votes
     FROM waifu_tag
@@ -277,16 +303,14 @@ let waifu_page_request = async (req, res) => {
     ON waifu_tag_mapping.waifu_id = {waifu_id} AND waifu_tag.id = waifu_tag_mapping.tag_id
     `;
 
-  waifu_info_query = utils.format_query(waifu_info_query, {
-    fields: "name_eng, name_native, gender, hair_color, likes, dislikes, img",
-    waifu_id: waifu_id,
-  });
   waifu_tags_query = utils.format_query(waifu_tags_query, {
     waifu_id: waifu_id,
   });
 
   comment = "Get detailed info for a waifu";
   let waifu_info_res = await pool.query(waifu_info_query);
+  comment = "Get a list of animes which waifus appear";
+  let anime_list_res = await pool.query(anime_list_query);
   comment = "Get tag info for a waifu";
   let waifu_tags_res = await pool.query(waifu_tags_query);
   try {
@@ -294,6 +318,7 @@ let waifu_page_request = async (req, res) => {
       //todo: add tag vote and may need modify the vote req.
       waifuIDLink: "/waifu/" + waifu_id,
       waifuInfo: waifu_info_res[0],
+      animeList: anime_list_res,
       waifuTags: waifu_tags_res,
     });
   } catch (err) {
@@ -304,26 +329,26 @@ let waifu_page_request = async (req, res) => {
 
 app.get("/waifu/:id", waifu_page_request);
 
-app.get("/allWaifuTags", async(req, res) => {
-    comment = "List all waifu tags";
-    const queryRes = await pool.query("SELECT name FROM waifu_tag");
-    const result = [];
-    queryRes.forEach(e => {
-        result.push(e.name);
-    });
+app.get("/allWaifuTags", async (req, res) => {
+  comment = "List all waifu tags";
+  const queryRes = await pool.query("SELECT name FROM waifu_tag");
+  const result = [];
+  queryRes.forEach((e) => {
+    result.push(e.name);
+  });
 
-    res.end(JSON.stringify(result));
+  res.end(JSON.stringify(result));
 });
 
-app.get("/allAnimeTags", async(req, res) => {
-    comment = "List all anime tags";
-    const queryRes = await pool.query("SELECT name FROM anime_tag");
-    const result = [];
-    queryRes.forEach(e => {
-        result.push(e.name);
-    });
+app.get("/allAnimeTags", async (req, res) => {
+  comment = "List all anime tags";
+  const queryRes = await pool.query("SELECT name FROM anime_tag");
+  const result = [];
+  queryRes.forEach((e) => {
+    result.push(e.name);
+  });
 
-    res.end(JSON.stringify(result));
+  res.end(JSON.stringify(result));
 });
 
 //Add anime_tag
@@ -472,7 +497,7 @@ app.post("/waifu/:id/waifu_tag_unvote", async (req, res) => {
 app.use(function (err, req, res, next) {
   console.error(err);
   console.error(err.stack);
-  res.status(500).send('Internal Server Error Occurred')
+  res.status(500).send("Internal Server Error Occurred");
 });
 
 (async () => {
