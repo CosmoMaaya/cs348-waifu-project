@@ -263,7 +263,7 @@ app.post("/waifu_list_query", async (req, res) => {
   req.body["page"] = Math.max(parseInt(req.body["page"]), 1) - 1;
   let acceptedSortFields = {
     popularity: "( likes + dislikes )",
-    rating: "score",
+    name: "name_eng",
   };
   let acceptedSortOrder = {
     ascending: "ASC",
