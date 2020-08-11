@@ -177,32 +177,19 @@ app.post("/waifu_list_query", async (req, res) => {
     // //         " votes_mal >= " + min_votes
     // //     )
     // // }
-    // if (requirements["type"]) {
-    //   let inp = requirements["type"];
-    //   let req = [];
-    //   for (let i in inp) {
-    //     req = req.concat(" LOWER(type) = '" + strip_special_characters(inp[i]).toLowerCase() + "' ");
-    //   }
-    //   if(req.length != 0) {
-    //     filter = filter.concat(" (" + req.join(" OR ") + ") ");
-    //   } else {
-    // filter = filter.concat(" FALSE ");
-    // }
-    // }
-    // if (requirements["adapt"]) {
-    //   let inp = requirements["adapt"];
-    //   let req = [];
-    //   for (let i in inp) {
-    //     req = req.concat(
-    //       " LOWER(source) = '" + strip_special_characters(inp[i]).toLowerCase().replace("_", " ") + "' "
-    //     );
-    //   }
-    //   if(req.length != 0) {
-    //     filter = filter.concat(" (" + req.join(" OR ") + ") ");
-    //   } else {
-    // filter = filter.concat(" FALSE ");
-    // }
-    // }
+    if (requirements["gender"]) {
+      let inp = requirements["gender"];
+      let req = [];
+      for (let i in inp) {
+        req = req.concat(" LOWER(gender) = '" + strip_special_characters(inp[i]).toLowerCase() + "' ");
+      }
+      if(req.length != 0) {
+        filter = filter.concat(" (" + req.join(" OR ") + ") ");
+      } else {
+    filter = filter.concat(" FALSE ");
+    }
+    }
+
     if (filter.length == 0) {
       return "";
     }
@@ -210,7 +197,7 @@ app.post("/waifu_list_query", async (req, res) => {
     return filter;
   };
 
-  // req.body["page"] = Math.max(parseInt(req.body["page"]), 1) - 1;
+  req.body["page"] = Math.max(parseInt(req.body["page"]), 1) - 1;
   // let acceptedSortFields = {
   //   title: "title_eng",
   //   rating: "score",
