@@ -17,7 +17,7 @@ const config = JSON.parse(
 );
 
 const app = express();
-let comment = "";
+let comment = undefined;
 
 app.disable("x-powered-by");
 app.use(express.static("public"));
