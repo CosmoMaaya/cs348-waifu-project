@@ -685,6 +685,9 @@ app.use(function (err, req, res, next) {
     if (process.argv.includes("dumpsql")) {
       const oldQuery = pool.query;
       pool.query = function (...args) {
+		if(comment === undefined) {
+			comment = "################## NO COMMENT ####################";
+		}
         console.error("/* " + comment + " */");
         console.error(
           "/* Code location: " +
@@ -694,6 +697,7 @@ app.use(function (err, req, res, next) {
               .trim() +
             " */"
         );
+		comment = undefined;
         console.error(mysql.format(...args).trim() + ";");
         console.error();
         return oldQuery.call(pool, ...args);
